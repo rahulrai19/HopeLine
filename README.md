@@ -1,3 +1,3 @@
-# WellU
-WellU:- An Application used for Development of a Digital Mental Health and Psychological Support System for Students in Higher Education
+# HopeLine
+HopeLine:- An Application used for Development of a Digital Mental Health and Psychological Support System for Students in Higher Education
 `By Team Verbose(0)`
