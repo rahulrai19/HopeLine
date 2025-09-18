@@ -33,35 +33,48 @@ export function Assessment() {
   const [phq, setPhq] = useState(Array(phqQuestions.length).fill(0))
   const [gad, setGad] = useState(Array(gadQuestions.length).fill(0))
   const [submitted, setSubmitted] = useState(false)
-  const [section, setSection] = useState('phq')
-  const [index, setIndex] = useState(0)
 
-  const activeQuestions = useMemo(()=> section==='phq' ? phqQuestions : gadQuestions, [section])
-  const totalQuestions = useMemo(()=> {
-    if (mode==='both') return phqQuestions.length + gadQuestions.length
-    if (mode==='phq') return phqQuestions.length
-    return gadQuestions.length
+  // Build a question queue. If mode is 'both', mix PHQ and GAD and shuffle order.
+  const queue = useMemo(()=>{
+    const phqQ = phqQuestions.map((q,i)=>({ type:'phq', text:q, idx:i }))
+    const gadQ = gadQuestions.map((q,i)=>({ type:'gad', text:q, idx:i }))
+    if (mode==='phq') return phqQ
+    if (mode==='gad') return gadQ
+    const merged = [...phqQ, ...gadQ]
+    // Shuffle
+    for (let i=merged.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [merged[i],merged[j]]=[merged[j],merged[i]] }
+    return merged
   }, [mode])
-  const answeredCount = useMemo(()=> {
-    if (mode==='both') return phq.filter(v=>v!==undefined).length + gad.filter(v=>v!==undefined).length
-    if (mode==='phq') return phq.filter(v=>v!==undefined).length
-    return gad.filter(v=>v!==undefined).length
+
+  const [cursor, setCursor] = useState(0)
+  const current = queue[cursor] || { type:'phq', text:'', idx:0 }
+
+  const totalQuestions = queue.length
+  const answeredCount = useMemo(()=>{
+    const a = phq.filter(v=>v!==undefined).length
+    const b = gad.filter(v=>v!==undefined).length
+    if (mode==='phq') return a
+    if (mode==='gad') return b
+    return a+b
   }, [mode, phq, gad])
 
   const scorePhq = phq.reduce((a,b)=>a+b,0)
   const scoreGad = gad.reduce((a,b)=>a+b,0)
 
+  const modeLabel = useMemo(()=>{
+    if (mode==='both') return 'PHQ-9 + GAD-7'
+    return mode==='phq' ? 'PHQ-9' : 'GAD-7'
+  }, [mode])
+
   function setAnswer(value){
-    if (section==='phq') { setPhq(prev=>{ const n=[...prev]; n[index]=value; return n }) }
-    else { setGad(prev=>{ const n=[...prev]; n[index]=value; return n }) }
+    if (current.type==='phq') { setPhq(prev=>{ const n=[...prev]; n[current.idx]=value; return n }) }
+    else { setGad(prev=>{ const n=[...prev]; n[current.idx]=value; return n }) }
   }
 
-  function next(){
-    if (index < activeQuestions.length-1) setIndex(i=>i+1)
-    else if (mode==='both' && section==='phq') { setSection('gad'); setIndex(0) }
-  }
-  function prev(){ if (index>0) setIndex(i=>i-1) }
+  function next(){ if (cursor < queue.length-1) setCursor(i=>i+1) }
+  function prev(){ if (cursor>0) setCursor(i=>i-1) }
 
+  const selectedValue = current.type==='phq' ? phq[current.idx] : gad[current.idx]
   const overall = scorePhq + scoreGad
   const riskHigh = overall >= 20
 
@@ -69,27 +82,42 @@ export function Assessment() {
     <div className="grid" style={{gap:24}}>
       <section className="card">
         <h2>Assessment</h2>
-        <p>Randomized mode: <strong className="pill">{mode.toUpperCase()}</strong>. Rate 0 (Not at all) → 3 (Nearly every day).</p>
-        <div style={{height:10, background:'#142144', borderRadius:999}}>
-          <div style={{height:'100%', width:`${Math.round((answeredCount/totalQuestions)*100)}%`, background:'linear-gradient(135deg, #49c099, #6edfb8)', borderRadius:999}} />
+        <p>
+          Randomized mode: <strong className="pill">{modeLabel}</strong>. Rate 0 (Not at all) → 3 (Nearly every day).
+        </p>
+        <div style={{height:10, background:'var(--input-bg)', border:'1px solid var(--border)', borderRadius:999}}>
+          <div style={{height:'100%', width:`${Math.round((answeredCount/totalQuestions)*100)}%`, background:'linear-gradient(135deg, var(--primary-600), var(--primary))', borderRadius:999}} />
         </div>
       </section>
 
       {/* Interactive stepper */}
       <section className="card">
         <div style={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
-          <h3 style={{margin:0}}>{section === 'phq' ? 'PHQ-9' : 'GAD-7'}</h3>
-          <span className="pill">Question {index+1} / {activeQuestions.length}</span>
+          <h3 style={{margin:0}}>{current.type === 'phq' ? 'PHQ-9' : 'GAD-7'}</h3>
+          <span className="pill">Question {cursor+1} / {totalQuestions}</span>
         </div>
-        <div style={{marginTop:12, fontSize:18}}>{activeQuestions[index]}</div>
-        <div style={{display:'grid', gridTemplateColumns:'repeat(4, minmax(0,1fr))', gap:8, marginTop:12}}>
-          {[0,1,2,3].map(v=> (
-            <button key={v} className={`btn ${((section==='phq'? phq[index] : gad[index])===v)? 'primary' : ''}`} onClick={()=>setAnswer(v)}>{v}</button>
-          ))}
+        <div style={{marginTop:12, fontSize:18}}>{current.text}</div>
+        <div style={{marginTop:16}}>
+          <input
+            type="range"
+            min={0}
+            max={3}
+            step={1}
+            value={selectedValue}
+            onChange={(e)=>setAnswer(Number(e.target.value))}
+            style={{width:'100%'}}
+          />
+          <div style={{display:'flex', justifyContent:'space-between', color:'var(--muted)', fontSize:12, marginTop:6}}>
+            <span>0 · Not at all</span>
+            <span>1</span>
+            <span>2</span>
+            <span>3 · Nearly every day</span>
+          </div>
+          <div style={{marginTop:6}}>Selected: <strong>{selectedValue}</strong></div>
         </div>
         <div style={{display:'flex', gap:8, marginTop:12}}>
-          <button className="btn" onClick={prev} disabled={index===0}>Back</button>
-          <button className="btn" onClick={next} disabled={index===activeQuestions.length-1 && !(mode==='both' && section==='phq')}>Next</button>
+          <button className="btn" onClick={prev} disabled={cursor===0}>Back</button>
+          <button className="btn" onClick={next} disabled={cursor===queue.length-1}>Next</button>
         </div>
       </section>
 
