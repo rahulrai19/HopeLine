@@ -1,0 +1,14 @@
+.shell { min-height: 100%; display: grid; grid-template-rows: auto 1fr auto; }
+.links a { margin-right: 10px; }
+.status { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+.burger { display:none; background:transparent; border:1px solid rgba(255,255,255,0.15); color:#e6eefc; border-radius:8px; padding:6px 10px; }
+.left { display:flex; align-items:center; gap: 10px; }
+
+@media (max-width: 820px) {
+  .burger { display:block; }
+  .links { position: absolute; top: 56px; left: 0; right: 0; display:none; background:#0b1220; border-bottom:1px solid rgba(255,255,255,0.08); padding:12px 24px; }
+  .links.open { display:block; }
+  .links a { display:block; margin:10px 0; }
+}
+
+

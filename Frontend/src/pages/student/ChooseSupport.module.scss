@@ -1,0 +1,19 @@
+.support {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.support > .card {
+  flex: 1 1 300px;
+}
+
+@media (max-width: 720px) {
+  .support {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 12px;
+  }
+}
+
+
