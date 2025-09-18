@@ -1,14 +1,13 @@
 .root { position: fixed; right: 16px; bottom: 16px; z-index: 50; }
-.fab { background: linear-gradient(135deg, #49c099, #6edfb8); color:#0b1220; border:none; border-radius: 999px; width:56px; height:56px; cursor:pointer; font-size:22px; box-shadow: 0 10px 20px rgba(0,0,0,0.35); }
-.panel { width: min(360px, 92vw); height: 440px; background:#0e1730; border:1px solid rgba(255,255,255,0.12); border-radius: 16px; margin-bottom: 10px; display:flex; flex-direction:column; overflow:hidden; }
-.header { padding: 12px 14px; border-bottom:1px solid rgba(255,255,255,0.1); font-weight:600; display:flex; align-items:center; justify-content:space-between; gap:8px; }
-.lang { background:#142144; color:#e6eefc; border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:6px 8px; }
+.fab { background: linear-gradient(135deg, #43fdbf, #6edfb8); color:#0b1220; border:none; border-radius: 999px; width:56px; height:56px; cursor:pointer; font-size:22px; box-shadow: 0 10px 20px rgba(0,0,0,0.35); }
+.panel { width: min(360px, 92vw); height: 440px; background:#b5cfaa; border:1px solid rgba(255,255,255,0.12); border-radius: 16px; margin-bottom: 10px; display:flex; flex-direction:column; overflow:hidden; }
+.header { padding: 12px 14px; border-bottom:1px solid rgba(201, 174, 174, 0.1); font-weight:600; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+.lang { background:#26bf8c; color:#f1f3f4; border:1px solid rgba(255,255,255,0.12); border-radius:8px; padding:6px 8px; }
 .nudge { position:absolute; right:72px; bottom:24px; background:#142144; border:1px solid rgba(255,255,255,0.12); color:#e6eefc; padding:8px 10px; border-radius:10px; max-width: 220px; box-shadow: 0 10px 20px rgba(0,0,0,0.3); }
 .list { flex:1; overflow:auto; padding: 12px; display:flex; flex-direction:column; gap:8px; }
 .msg { max-width: 80%; padding:10px 12px; border-radius:12px; }
-.you { align-self:flex-end; background:#1a2542; }
-.bot { align-self:flex-start; background:#142144; }
+.you { align-self:flex-end; background:#3e769c; }
+.bot { align-self:flex-start; background:#ac5f0c7f; }
 .inputRow { display:flex; gap:8px; padding: 10px; border-top:1px solid rgba(255,255,255,0.1); }
 .inputRow input { flex:1; }
-
 

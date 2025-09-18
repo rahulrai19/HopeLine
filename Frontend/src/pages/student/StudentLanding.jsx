@@ -9,9 +9,18 @@ export function StudentLanding() {
         <p className="pill">Your safe space for support</p>
         <p>Access self help, peer communities, and professional counsellors in one place.</p>
         <div className="grid" style={{gridTemplateColumns:'repeat(3, minmax(0,1fr))'}}>
-          <div className="card"><h3>Assessment</h3><p>PHQ-9 + GAD-7</p></div>
-          <div className="card"><h3>Dashboard</h3><p>Personalised overview</p></div>
-          <div className="card"><h3>Crisis Alert</h3><p>Emergency guidance</p></div>
+          <Link to="/student/assessment" className="card" style={{display:'block'}}>
+            <h3>Assessment</h3>
+            <p>PHQ-9 + GAD-7</p>
+          </Link>
+          <Link to="/student/dashboard" className="card" style={{display:'block'}}>
+            <h3>Dashboard</h3>
+            <p>Personalised overview</p>
+          </Link>
+          <Link to="/student/crisis" className="card" style={{display:'block'}}>
+            <h3>Crisis Alert</h3>
+            <p>Emergency guidance</p>
+          </Link>
         </div>
       </section>
       <div className="card" style={{textAlign:'center'}}>

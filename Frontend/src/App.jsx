@@ -16,7 +16,7 @@ import { CaseMonitoring } from './pages/admin/CaseMonitoring.jsx'
 import { ReportsAnalytics } from './pages/admin/ReportsAnalytics.jsx'
 import { OfflineCounselorSupport } from './pages/admin/OfflineCounselorSupport.jsx'
 import { UpdatesNotification } from './pages/admin/UpdatesNotification.jsx'
-import { AuthProvider } from './context/AuthContext.jsx'
+import { AuthProvider, useAuth } from './context/AuthContext.jsx'
 import { Login } from './pages/auth/Login.jsx'
 import { ChatbotWidget } from './components/chatbot/ChatbotWidget.jsx'
 
@@ -29,7 +29,7 @@ export default function App() {
           <Route path="student">
             <Route index element={<StudentLanding />} />
             <Route path="dashboard" element={<StudentDashboard />} />
-            <Route path="assessment" element={<Assessment />} />
+            <Route path="assessment" element={<RequireStudent><Assessment /></RequireStudent>} />
             <Route path="crisis" element={<CrisisAlert />} />
             <Route path="support" element={<ChooseSupport />} />
             <Route path="self-help" element={<SelfHelp />} />
@@ -54,6 +54,12 @@ export default function App() {
       <ChatbotWidget />
     </AuthProvider>
   )
+}
+
+function RequireStudent({ children }){
+  const { studentLoggedIn } = useAuth()
+  if (!studentLoggedIn) return <Navigate to="/login?role=student" replace />
+  return children
 }
 
 
