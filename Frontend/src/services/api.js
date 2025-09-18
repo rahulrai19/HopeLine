@@ -26,4 +26,8 @@ export const FeedbackAPI = {
   submit: (payload) => apiPost('/api/feedback/submit', payload),
 }
 
+export const AIAPI = {
+  chat: (payload) => apiPost('/api/ai/chat', payload),
+}
+
 
