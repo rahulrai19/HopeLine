@@ -1,4 +1,36 @@
-.shell { min-height: 100%; display: grid; grid-template-rows: auto 1fr auto; }
+.shell { 
+  min-height: 100vh; 
+  display: grid; 
+  grid-template-rows: auto 1fr auto;
+  background: radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 70%);
+}
+
+.mainContent {
+  display: flex;
+  gap: 24px;
+  flex: 1;
+  padding: 24px 0;
+  background: transparent;
+}
+
+.contentArea {
+  flex: 1;
+  min-width: 0; // Prevents flex item from overflowing
+  background: transparent;
+}
+
+.sidebar {
+  width: 280px;
+  flex-shrink: 0;
+  
+  @media (max-width: 1024px) {
+    width: 240px;
+  }
+  
+  @media (max-width: 768px) {
+    display: none; // Hide sidebar on mobile, mood indicator will be in header
+  }
+}
 .links a { margin-right: 10px; }
 .status { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
 .burger { display:none; background:transparent; border:1px solid var(--border); color:var(--text); border-radius:8px; padding:6px 10px; }

@@ -17,28 +17,28 @@ import { ReportsAnalytics } from './pages/admin/ReportsAnalytics.jsx'
 import { OfflineCounselorSupport } from './pages/admin/OfflineCounselorSupport.jsx'
 import { UpdatesNotification } from './pages/admin/UpdatesNotification.jsx'
 import { AuthProvider, useAuth } from './context/AuthContext.jsx'
+import { MoodProvider } from './context/MoodContext.jsx'
 import { Login } from './pages/auth/Login.jsx'
 import { ChatbotWidget } from './components/chatbot/ChatbotWidget.jsx'
 
 export default function App() {
   return (
     <AuthProvider>
-      <Routes>
+      <MoodProvider>
+        <Routes>
+        <Route index element={<StudentLanding />} />
+        <Route path="student" element={<StudentLanding />} />
+        <Route path="login" element={<Login />} />
+        
         <Route element={<AppLayout />}> 
-          <Route index element={<Navigate to="/student" replace />} />
-          <Route path="student">
-            <Route index element={<StudentLanding />} />
-            <Route path="dashboard" element={<StudentDashboard />} />
-            <Route path="assessment" element={<RequireStudent><Assessment /></RequireStudent>} />
-            <Route path="crisis" element={<CrisisAlert />} />
-            <Route path="support" element={<ChooseSupport />} />
-            <Route path="self-help" element={<SelfHelp />} />
-            <Route path="peer" element={<PeerSupport />} />
-            <Route path="counselor" element={<Counselor />} />
-            <Route path="feedback" element={<Feedback />} />
-          </Route>
-
-          <Route path="login" element={<Login />} />
+          <Route path="student/dashboard" element={<StudentDashboard />} />
+          <Route path="student/assessment" element={<RequireStudent><Assessment /></RequireStudent>} />
+          <Route path="student/crisis" element={<CrisisAlert />} />
+          <Route path="student/support" element={<ChooseSupport />} />
+          <Route path="student/self-help" element={<SelfHelp />} />
+          <Route path="student/peer" element={<PeerSupport />} />
+          <Route path="student/counselor" element={<Counselor />} />
+          <Route path="student/feedback" element={<Feedback />} />
 
           <Route path="admin">
             <Route index element={<AdminLogin />} />
@@ -50,8 +50,9 @@ export default function App() {
             <Route path="updates" element={<UpdatesNotification />} />
           </Route>
         </Route>
-      </Routes>
-      <ChatbotWidget />
+        </Routes>
+        <ChatbotWidget />
+      </MoodProvider>
     </AuthProvider>
   )
 }

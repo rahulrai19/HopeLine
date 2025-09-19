@@ -2,6 +2,7 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import { useEffect, useState } from 'react'
 import styles from './AppLayout.module.scss'
 import { useAuth } from '../../context/AuthContext.jsx'
+import { MoodIndicator } from '../mood/MoodIndicator.jsx'
 
 export function AppLayout() {
   const { adminLoggedIn } = useAuth()
@@ -54,6 +55,7 @@ export function AppLayout() {
             <NavLink to="/student/support">Support</NavLink>
           </div>
           <div className={styles.status}>
+            <MoodIndicator compact={true} />
             <button className="btn ghost" onClick={toggleTheme} aria-label="Toggle theme" title={themeTitle}>
               <span style={{fontSize:'18px', lineHeight:1}}>{themeIcon}</span>
             </button>
@@ -62,7 +64,14 @@ export function AppLayout() {
         </nav>
       </header>
       <main className="container">
-        <Outlet />
+        <div className={styles.mainContent}>
+          <div className={styles.contentArea}>
+            <Outlet />
+          </div>
+          <div className={styles.sidebar}>
+            <MoodIndicator showHistory={true} />
+          </div>
+        </div>
       </main>
       <footer className="footer">© {new Date().getFullYear()} HopeLine • Digital Mental Health for Students</footer>
     </div>
