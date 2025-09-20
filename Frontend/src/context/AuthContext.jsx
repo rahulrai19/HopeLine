@@ -27,13 +27,23 @@ export function AuthProvider({ children }) {
     setAdminLoggedIn(data.user.role==='admin')
   }
 
+  async function signup(payload){
+    const data = await AuthAPI.signup(payload)
+    localStorage.setItem('token', data.token)
+    localStorage.setItem('role', data.user.role)
+    setUser(data.user)
+    setStudentLoggedIn(data.user.role==='student')
+    setAdminLoggedIn(data.user.role==='admin')
+    return data
+  }
+
   const loginStudent = () => { setStudentLoggedIn(true); localStorage.setItem('role','student') }
   const logoutStudent = () => { setStudentLoggedIn(false); localStorage.removeItem('token'); localStorage.removeItem('role'); setUser(null) }
   const loginAdmin   = () => { setAdminLoggedIn(true); localStorage.setItem('role','admin') }
   const logoutAdmin  = () => { setAdminLoggedIn(false); localStorage.removeItem('token'); localStorage.removeItem('role'); setUser(null) }
 
   return (
-    <AuthContext.Provider value={{ user, studentLoggedIn, adminLoggedIn, loginStudent, logoutStudent, loginAdmin, logoutAdmin, login }}>
+    <AuthContext.Provider value={{ user, studentLoggedIn, adminLoggedIn, loginStudent, logoutStudent, loginAdmin, logoutAdmin, login, signup }}>
       {children}
     </AuthContext.Provider>
   )

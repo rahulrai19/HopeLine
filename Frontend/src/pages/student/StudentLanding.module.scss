@@ -380,6 +380,33 @@
   }
 }
 
+.authButtons {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.signupBtn {
+  background: transparent;
+  color: #66b2b2;
+  padding: 16px 32px;
+  border: 2px solid #66b2b2;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.2s;
+  
+  &:hover {
+    background: #66b2b2;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 178, 178, 0.3);
+  }
+}
+
 // Info section (Features & About combined)
 .infoSection {
   background: rgba(255, 255, 255, 0.02);
