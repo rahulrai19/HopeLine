@@ -29,8 +29,16 @@ export function Login() {
       alignItems: 'center',
       justifyContent: 'center',
       padding: '20px',
-      background: 'radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 70%)'
+      background: 'radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 70%)',
+      position: 'relative',
+      overflow: 'hidden'
     }}>
+      <style>{`
+        @keyframes heartbeat {
+          0%, 100% { transform: scale(1); }
+          50% { transform: scale(1.05); }
+        }
+      `}</style>
       <div style={{
         background: 'rgba(255, 255, 255, 0.05)',
         border: '1px solid rgba(255, 255, 255, 0.1)',
@@ -41,45 +49,51 @@ export function Login() {
         maxWidth: '480px',
         width: '100%'
       }}>
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
           <div style={{
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             gap: '12px',
-            marginBottom: '16px'
+            marginBottom: '24px'
           }}>
             <div style={{
-              width: '40px',
-              height: '40px',
+              width: '48px',
+              height: '48px',
               background: 'linear-gradient(135deg, #66b2b2, #4a9d9d)',
-              borderRadius: '8px',
+              borderRadius: '12px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              fontSize: '20px'
+              fontSize: '24px',
+              animation: 'heartbeat 2s ease-in-out infinite'
             }}>💚</div>
             <h1 style={{
-              fontSize: '28px',
+              fontSize: '32px',
               fontWeight: '700',
               color: '#ffffff',
               margin: '0'
             }}>HopeLine</h1>
           </div>
           <p style={{
-            color: '#cccccc',
-            fontSize: '16px',
-            margin: '0'
+            color: '#e0e0e0',
+            fontSize: '18px',
+            margin: '0',
+            lineHeight: '1.6'
           }}>Your mental health companion</p>
         </div>
 
         <form onSubmit={submit}>
           <h2 style={{
-            fontSize: '24px',
-            fontWeight: '600',
+            fontSize: '28px',
+            fontWeight: '700',
             color: '#ffffff',
-            marginBottom: '24px',
-            textAlign: 'center'
+            marginBottom: '32px',
+            textAlign: 'center',
+            background: 'linear-gradient(135deg, #66b2b2, #4a9d9d)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            backgroundClip: 'text'
           }}>Welcome Back</h2>
           
           <div style={{
@@ -150,13 +164,14 @@ export function Login() {
               autoComplete={role==='admin' ? 'username' : 'email'}
               style={{
                 width: '100%',
-                padding: '12px 16px',
+                padding: '16px 20px',
                 borderRadius: '12px',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                border: '2px solid rgba(255, 255, 255, 0.1)',
                 background: 'rgba(255, 255, 255, 0.05)',
                 color: '#ffffff',
                 fontSize: '16px',
-                transition: 'all 0.2s ease'
+                transition: 'all 0.3s ease',
+                backdropFilter: 'blur(10px)'
               }}
             />
           </div>
@@ -180,13 +195,14 @@ export function Login() {
               autoComplete="current-password"
               style={{
                 width: '100%',
-                padding: '12px 16px',
+                padding: '16px 20px',
                 borderRadius: '12px',
-                border: '1px solid rgba(255, 255, 255, 0.1)',
+                border: '2px solid rgba(255, 255, 255, 0.1)',
                 background: 'rgba(255, 255, 255, 0.05)',
                 color: '#ffffff',
                 fontSize: '16px',
-                transition: 'all 0.2s ease'
+                transition: 'all 0.3s ease',
+                backdropFilter: 'blur(10px)'
               }}
             />
           </div>
@@ -195,19 +211,21 @@ export function Login() {
             type="submit"
             style={{
               width: '100%',
-              padding: '14px 24px',
+              padding: '18px 24px',
               borderRadius: '12px',
               background: 'linear-gradient(135deg, #66b2b2, #4a9d9d)',
               color: '#ffffff',
               border: 'none',
-              fontSize: '16px',
+              fontSize: '18px',
               fontWeight: '600',
               cursor: 'pointer',
-              transition: 'all 0.2s ease'
+              transition: 'all 0.3s ease',
+              position: 'relative',
+              overflow: 'hidden'
             }}
             onMouseOver={(e) => {
-              e.target.style.transform = 'translateY(-2px)'
-              e.target.style.boxShadow = '0 8px 25px rgba(102, 178, 178, 0.3)'
+              e.target.style.transform = 'translateY(-3px)'
+              e.target.style.boxShadow = '0 15px 30px rgba(102, 178, 178, 0.4)'
             }}
             onMouseOut={(e) => {
               e.target.style.transform = 'translateY(0)'
@@ -217,6 +235,47 @@ export function Login() {
             Sign In
           </button>
         </form>
+
+        {role === 'student' && (
+          <div style={{
+            textAlign: 'center',
+            marginTop: '24px',
+            paddingTop: '24px',
+            borderTop: '1px solid rgba(255, 255, 255, 0.1)'
+          }}>
+            <p style={{
+              color: '#cccccc',
+              fontSize: '14px',
+              margin: '0 0 12px 0'
+            }}>
+              Don't have an account?
+            </p>
+            <a 
+              href="/signup"
+              style={{
+                color: '#66b2b2',
+                textDecoration: 'none',
+                fontSize: '14px',
+                fontWeight: '600',
+                padding: '8px 16px',
+                border: '1px solid #66b2b2',
+                borderRadius: '20px',
+                display: 'inline-block',
+                transition: 'all 0.2s ease'
+              }}
+              onMouseOver={(e) => {
+                e.target.style.background = '#66b2b2'
+                e.target.style.color = '#ffffff'
+              }}
+              onMouseOut={(e) => {
+                e.target.style.background = 'transparent'
+                e.target.style.color = '#66b2b2'
+              }}
+            >
+              Create Student Account
+            </a>
+          </div>
+        )}
       </div>
     </div>
   )

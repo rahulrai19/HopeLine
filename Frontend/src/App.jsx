@@ -19,6 +19,7 @@ import { UpdatesNotification } from './pages/admin/UpdatesNotification.jsx'
 import { AuthProvider, useAuth } from './context/AuthContext.jsx'
 import { MoodProvider } from './context/MoodContext.jsx'
 import { Login } from './pages/auth/Login.jsx'
+import Signup from './pages/auth/Signup.jsx'
 import { ChatbotWidget } from './components/chatbot/ChatbotWidget.jsx'
 
 export default function App() {
@@ -29,6 +30,7 @@ export default function App() {
         <Route index element={<StudentLanding />} />
         <Route path="student" element={<StudentLanding />} />
         <Route path="login" element={<Login />} />
+        <Route path="signup" element={<Signup />} />
         
         <Route element={<AppLayout />}> 
           <Route path="student/dashboard" element={<StudentDashboard />} />

@@ -139,9 +139,14 @@ export function StudentLanding() {
                   Continue Journey
                 </Link>
               ) : (
-                <Link to="/login?role=student" className={styles.primaryBtn}>
-                  Get Started
-                </Link>
+                <div className={styles.authButtons}>
+                  <Link to="/login?role=student" className={styles.primaryBtn}>
+                    Sign In
+                  </Link>
+                  <Link to="/signup" className={styles.signupBtn}>
+                    Create Account
+                  </Link>
+                </div>
               )}
               {adminLoggedIn ? (
                 <Link to="/admin/dashboard" className={styles.secondaryBtn}>

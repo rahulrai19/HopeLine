@@ -28,6 +28,10 @@ export async function apiPost(path, body, opts={}){
 export const AuthAPI = {
   login: (payload) => apiPost('/api/auth/login', payload),
   register: (payload) => apiPost('/api/auth/register', payload),
+  signup: (payload) => apiPost('/api/auth/signup', payload),
+  checkUsername: (username) => apiGet(`/api/auth/check-username/${username}`),
+  checkEmail: (email) => apiGet(`/api/auth/check-email/${email}`),
+  getProfile: () => apiGet('/api/auth/profile'),
 }
 
 export const AppointmentsAPI = {
