@@ -25,7 +25,7 @@ const allowedOrigins = [
   'http://localhost:5175',
   'http://localhost:5176',
   // Add your specific frontend Vercel URL
-  'https://hope-line-dflp.vercel.app',
+  'https://hope-line.vercel.app',
   // Add your frontend Vercel URL here
   process.env.FRONTEND_URL,
   // Allow any Vercel app domain (for flexibility)
