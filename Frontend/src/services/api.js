@@ -44,19 +44,18 @@ export const FeedbackAPI = {
 
 export const AIAPI = {
   chat: async (payload) => {
+    // In production (Vercel), prefer same-origin serverless function first
     try {
-      // Prefer backend API if configured
-      return await apiPost('/api/ai/chat', payload)
-    } catch (e) {
-      // Fallback to Vercel Python function on same origin
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type':'application/json' },
         body: JSON.stringify(payload),
       })
-      if (!res.ok) throw new Error(await res.text())
-      return res.json()
-    }
+      if (res.ok) return res.json()
+    } catch {}
+
+    // Fallback to configured backend API if available
+    return apiPost('/api/ai/chat', payload)
   },
 }
 
