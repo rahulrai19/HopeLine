@@ -9,8 +9,6 @@ const router = Router()
 // POST /api/ai/chat  { messages: [{role:'user'|'system'|'assistant', content:string}], lang?:'en', userId?:string }
 router.post('/chat', async (req, res) => {
   const { messages = [], lang = 'en', model = 'gemini-1.5-flash-8b', userId = 'anonymous' } = req.body || {}
-  const apiKey = process.env.GEMINI_API_KEY
-  if (!apiKey) return res.status(500).json({ message: 'Missing GEMINI_API_KEY' })
 
   try {
     // Generate conversation context using the prompt system
@@ -42,6 +40,11 @@ router.post('/chat', async (req, res) => {
       const txt = await pyRes.text()
       return res.status(502).json({ message: 'Python LLM error', detail: txt })
     }
+
+
+    // Build enhanced prompt with system guidelines (Gemini fallback)
+    const apiKey = process.env.GEMINI_API_KEY
+    if (!apiKey) return res.status(500).json({ message: 'Missing GEMINI_API_KEY' })
 
 
     // Build enhanced prompt with system guidelines
@@ -94,11 +97,14 @@ router.post('/chat', async (req, res) => {
         return { ok: false, status: 500, text: String(e) }
       }
     }
+    let out = await callWithRetry()
+
 
 
     let out = await callWithRetry()
 
     const out = await callWithRetry()
+
 
     if (!out.ok) {
       // Graceful fallback: respond 200 with a supportive default to keep UX smooth
@@ -241,6 +247,7 @@ router.post('/counselor-referral', async (req, res) => {
 })
 
 // GET /api/ai/self-help/:riskLevel - Get self-help suggestions
+// GET /api/ai/self-help/:riskLevel - Get self-help suggestions
 router.get('/self-help/:riskLevel', async (req, res) => {
   try {
     const { riskLevel } = req.params
@@ -248,6 +255,7 @@ router.get('/self-help/:riskLevel', async (req, res) => {
     if (!['low', 'moderate', 'high'].includes(riskLevel)) {
       return res.status(400).json({ message: 'Invalid risk level. Use low, moderate, or high' })
     }
+
 
 
     }
@@ -315,6 +323,7 @@ router.get('/self-help/:riskLevel', async (req, res) => {
     if (!['low', 'moderate', 'high'].includes(riskLevel)) {
       return res.status(400).json({ message: 'Invalid risk level. Use low, moderate, or high' })
     }
+
 
 
     const suggestions = aiPromptSystem.getSelfHelpSuggestions(riskLevel)
