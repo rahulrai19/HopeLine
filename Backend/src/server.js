@@ -17,15 +17,20 @@ dotenv.config()
 
 const app = express()
 
-// Enhanced CORS configuration
+// Enhanced CORS configuration for production
+const allowedOrigins = [
+  'http://localhost:3000',
+  'http://localhost:5173',
+  'http://localhost:5174',
+  'http://localhost:5175',
+  'http://localhost:5176',
+  // Add your Vercel domain here
+  process.env.FRONTEND_URL,
+  process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null
+].filter(Boolean)
+
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'http://localhost:5173',
-    'http://localhost:5174',
-    'http://localhost:5175',
-    'http://localhost:5176'
-  ],
+  origin: allowedOrigins,
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -48,11 +53,23 @@ app.use(errorHandler)
 const PORT = process.env.PORT || 4000
 const MONGO_URI = process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/hopeline'
 
-mongoose.connect(MONGO_URI).then(()=>{
-  app.listen(PORT, ()=> console.log(`API running on http://localhost:${PORT}`))
-}).catch(err=>{
+// Connect to MongoDB
+mongoose.connect(MONGO_URI).then(() => {
+  console.log('Connected to MongoDB')
+}).catch(err => {
   console.error('Mongo connection error', err)
-  process.exit(1)
+  // Don't exit in production, let Vercel handle it
+  if (process.env.NODE_ENV !== 'production') {
+    process.exit(1)
+  }
 })
+
+// Start server only if not in Vercel environment
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`))
+}
+
+// Export for Vercel
+export default app
 
 
