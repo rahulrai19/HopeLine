@@ -41,9 +41,14 @@ router.post('/chat', async (req, res) => {
       return res.status(502).json({ message: 'Python LLM error', detail: txt })
     }
 
+
     // Build enhanced prompt with system guidelines (Gemini fallback)
     const apiKey = process.env.GEMINI_API_KEY
     if (!apiKey) return res.status(500).json({ message: 'Missing GEMINI_API_KEY' })
+
+
+    // Build enhanced prompt with system guidelines
+
     const systemPrompt = aiPromptSystem.getSystemPrompt()
     const userText = messages.map(m => `${m.role}: ${m.content}`).join('\n')
     const prompt = `${systemPrompt}\n\nLanguage: ${lang}\n\nConversation:\n${userText}\n\nassistant:`
@@ -93,6 +98,13 @@ router.post('/chat', async (req, res) => {
       }
     }
     let out = await callWithRetry()
+
+
+
+    let out = await callWithRetry()
+
+    const out = await callWithRetry()
+
 
     if (!out.ok) {
       // Graceful fallback: respond 200 with a supportive default to keep UX smooth
@@ -243,6 +255,75 @@ router.get('/self-help/:riskLevel', async (req, res) => {
     if (!['low', 'moderate', 'high'].includes(riskLevel)) {
       return res.status(400).json({ message: 'Invalid risk level. Use low, moderate, or high' })
     }
+
+
+
+    }
+
+    // Return next question
+    res.json({
+      complete: false,
+      question: questions[currentQuestion],
+      questionNumber: currentQuestion + 1,
+      totalQuestions: questions.length,
+      message: `Question ${currentQuestion + 1} of ${questions.length}: ${questions[currentQuestion]}`
+    })
+
+  } catch (error) {
+    console.error('Assessment error:', error)
+    res.status(500).json({ message: 'Internal server error' })
+  }
+})
+
+// POST /api/ai/counselor-referral - Create counselor referral
+router.post('/counselor-referral', async (req, res) => {
+  try {
+    const { userId, reason, priority = 'moderate', contactInfo } = req.body
+    
+    if (!userId) {
+      return res.status(400).json({ message: 'User ID is required' })
+    }
+
+    // Create counselor referral record
+    const referral = {
+      userId,
+      reason,
+      priority,
+      contactInfo,
+      timestamp: new Date(),
+      status: 'pending',
+      counselorContact: aiPromptSystem.counselorContact
+    }
+
+    // In a real implementation, you would save this to a database
+    console.log('Counselor referral created:', referral)
+
+    res.json({
+      message: 'Counselor referral created successfully',
+      referral,
+      counselorContact: aiPromptSystem.counselorContact,
+      nextSteps: [
+        'A counselor will contact you within 24 hours',
+        'In case of emergency, call the helpline immediately',
+        'Continue using self-help resources in the meantime'
+      ]
+    })
+
+  } catch (error) {
+    console.error('Counselor referral error:', error)
+    res.status(500).json({ message: 'Internal server error' })
+  }
+})
+
+// GET /api/ai/self-help/:riskLevel - Get self-help suggestions
+router.get('/self-help/:riskLevel', async (req, res) => {
+  try {
+    const { riskLevel } = req.params
+    
+    if (!['low', 'moderate', 'high'].includes(riskLevel)) {
+      return res.status(400).json({ message: 'Invalid risk level. Use low, moderate, or high' })
+    }
+
 
 
     const suggestions = aiPromptSystem.getSelfHelpSuggestions(riskLevel)
