@@ -17,17 +17,18 @@ dotenv.config()
 
 const app = express()
 
-// Enhanced CORS configuration for production
+// Enhanced CORS configuration for separate deployments
 const allowedOrigins = [
   'http://localhost:3000',
   'http://localhost:5173',
   'http://localhost:5174',
   'http://localhost:5175',
   'http://localhost:5176',
-  // Add your Vercel domain here
+  // Add your frontend Vercel URL here
   process.env.FRONTEND_URL,
-  process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : null
-].filter(Boolean)
+  // Allow any Vercel app domain (for flexibility)
+  /^https:\/\/.*\.vercel\.app$/
+]
 
 app.use(cors({
   origin: allowedOrigins,
