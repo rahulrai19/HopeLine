@@ -19,6 +19,7 @@ pnpm-debug.log*
 .env.*
 Frontend/.env
 Backend/.env
+ChatBot/.env
 
 # OS / editor
 .DS_Store
