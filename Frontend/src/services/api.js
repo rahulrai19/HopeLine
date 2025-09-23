@@ -43,7 +43,21 @@ export const FeedbackAPI = {
 }
 
 export const AIAPI = {
-  chat: (payload) => apiPost('/api/ai/chat', payload),
+  chat: async (payload) => {
+    try {
+      // Prefer backend API if configured
+      return await apiPost('/api/ai/chat', payload)
+    } catch (e) {
+      // Fallback to Vercel Python function on same origin
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type':'application/json' },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) throw new Error(await res.text())
+      return res.json()
+    }
+  },
 }
 
 export const AnalyticsAPI = {
