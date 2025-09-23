@@ -1,6 +1,8 @@
 import { Router } from 'express'
 import { aiPromptSystem } from '../utils/aiPromptSystem.js'
 
+const PY_LLM_URL = process.env.PY_LLM_URL // e.g., http://localhost:8001/chat
+
 const router = Router()
 
 // POST /api/ai/chat  { messages: [{role:'user'|'system'|'assistant', content:string}], lang?:'en', userId?:string }
@@ -24,7 +26,22 @@ router.post('/chat', async (req, res) => {
       })
     }
 
-    // Build enhanced prompt with system guidelines
+    // If external Python LLM is configured, route the request there
+    if (PY_LLM_URL) {
+      const pyRes = await fetch(PY_LLM_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages, system_prompt: aiPromptSystem.getSystemPrompt() })
+      })
+      if (pyRes.ok) {
+        const data = await pyRes.json()
+        return res.json({ reply: data.reply, action: context.action, suggestions: context.suggestions, counselorContact: context.counselorContact, priority: context.priority })
+      }
+      const txt = await pyRes.text()
+      return res.status(502).json({ message: 'Python LLM error', detail: txt })
+    }
+
+    // Build enhanced prompt with system guidelines (Gemini fallback)
     const systemPrompt = aiPromptSystem.getSystemPrompt()
     const userText = messages.map(m => `${m.role}: ${m.content}`).join('\n')
     const prompt = `${systemPrompt}\n\nLanguage: ${lang}\n\nConversation:\n${userText}\n\nassistant:`
@@ -74,7 +91,7 @@ router.post('/chat', async (req, res) => {
       }
     }
 
-    const out = await callWithRetry()
+    let out = await callWithRetry()
     if (!out.ok) {
       // Graceful fallback: respond 200 with a supportive default to keep UX smooth
       const fallback = {
@@ -88,6 +105,16 @@ router.post('/chat', async (req, res) => {
         error: { status: out.status, text: out.text },
         action: 'general_support'
       })
+    }
+
+    // Anti-repetition: if model repeats the last assistant message, try once more with higher temperature and explicit instruction
+    const lastAssistant = [...messages].reverse().find(m => m.role === 'assistant')?.content?.trim()
+    const current = out.text?.trim()
+    if (lastAssistant && current && current === lastAssistant) {
+      payload.generationConfig = { ...(payload.generationConfig||{}), temperature: 0.6, topP: 0.9 }
+      const antiRepeatPrompt = `${prompt}\n\nAvoid repeating the previous assistant message. Add one new supportive insight or next step.`
+      payload.contents = [{ parts: [{ text: antiRepeatPrompt }] }]
+      out = await callWithRetry()
     }
 
     // Return enhanced response with context

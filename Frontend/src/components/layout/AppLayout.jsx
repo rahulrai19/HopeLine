@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react'
 import styles from './AppLayout.module.scss'
 import { useAuth } from '../../context/AuthContext.jsx'
 import { MoodIndicator } from '../mood/MoodIndicator.jsx'
+import { NavbarChat } from '../chatbot/NavbarChat.jsx'
 
 export function AppLayout() {
   const { adminLoggedIn } = useAuth()
@@ -59,6 +60,7 @@ export function AppLayout() {
             <button className="btn ghost" onClick={toggleTheme} aria-label="Toggle theme" title={themeTitle}>
               <span style={{fontSize:'18px', lineHeight:1}}>{themeIcon}</span>
             </button>
+            <NavbarChat />
             <button className="btn primary" onClick={goAdmin}>{adminLoggedIn? 'Admin Panel' : 'Login'}</button>
           </div>
         </nav>
