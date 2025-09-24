@@ -9,17 +9,19 @@ const router = Router()
 // POST /api/auth/login
 router.post('/login', async (req, res) => {
   try {
-    const { email, password } = req.body
+    const { email, username, password } = req.body
 
-    console.log('Login attempt:', { email, passwordLength: password?.length })
+    console.log('Login attempt:', { email, username, passwordLength: password?.length })
 
-    if (!email || !password) {
-      return res.status(400).json({ message: 'Email and password are required' })
+    // Accept either email or username
+    const identity = email || username
+    if (!identity || !password) {
+      return res.status(400).json({ message: 'Email/username and password are required' })
     }
 
     // Find user by email or username
     const user = await User.findOne({
-      $or: [{ email }, { username: email }]
+      $or: [{ email: identity }, { username: identity }]
     })
 
     console.log('User found:', user ? { id: user._id, email: user.email, username: user.username } : 'No user found')

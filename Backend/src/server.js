@@ -98,8 +98,13 @@ app.post('/debug/seed', async (req, res) => {
     // Clear existing users
     await User.deleteMany({})
     
-    // Create demo users
-    const users = await User.insertMany(demoUsers)
+    // Create users one by one to trigger pre-save hooks for password hashing
+    const users = []
+    for (const userData of demoUsers) {
+      const user = new User(userData)
+      await user.save() // This will trigger the pre-save hook to hash the password
+      users.push(user)
+    }
     
     res.json({ 
       message: 'Database seeded successfully',
@@ -123,6 +128,30 @@ app.get('/test/auth', (req, res) => {
     ],
     timestamp: new Date().toISOString()
   })
+})
+
+// Debug endpoint to test password hashing
+app.post('/debug/test-password', async (req, res) => {
+  try {
+    const User = (await import('./models/User.js')).default
+    const { username, password } = req.body
+    
+    const user = await User.findOne({ username })
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' })
+    }
+    
+    const isValid = await user.comparePassword(password)
+    
+    res.json({
+      username: user.username,
+      email: user.email,
+      passwordMatch: isValid,
+      storedPasswordHash: user.password.substring(0, 20) + '...' // Show first 20 chars only
+    })
+  } catch (error) {
+    res.status(500).json({ message: 'Error testing password', error: error.message })
+  }
 })
 
 app.use('/api/auth', authRoutes)

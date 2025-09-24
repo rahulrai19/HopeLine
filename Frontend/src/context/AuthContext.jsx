@@ -20,7 +20,7 @@ export function AuthProvider({ children }) {
 
   async function login(payload){
     const data = await AuthAPI.login(payload)
-    localStorage.setItem('token', data.token)
+    localStorage.setItem('token', data.accessToken || data.token)
     localStorage.setItem('role', data.user.role)
     setUser(data.user)
     setStudentLoggedIn(data.user.role==='student')
@@ -29,7 +29,7 @@ export function AuthProvider({ children }) {
 
   async function signup(payload){
     const data = await AuthAPI.signup(payload)
-    localStorage.setItem('token', data.token)
+    localStorage.setItem('token', data.accessToken || data.token)
     localStorage.setItem('role', data.user.role)
     setUser(data.user)
     setStudentLoggedIn(data.user.role==='student')
