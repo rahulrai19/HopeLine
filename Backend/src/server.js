@@ -60,7 +60,12 @@ app.use(helmet())
 app.use(express.json())
 app.use(morgan('dev'))
 
-app.get('/', (req, res) => res.json({ status: 'ok', service: 'HopeLine API' }))
+app.get('/', (req, res) => res.json({ 
+  status: 'ok', 
+  service: 'HopeLine API',
+  timestamp: new Date().toISOString(),
+  version: '1.0.0'
+}))
 
 // Debug endpoint to check database connection and users
 app.get('/debug/users', async (req, res) => {
@@ -104,6 +109,20 @@ app.post('/debug/seed', async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: 'Seeding error', error: error.message })
   }
+})
+
+// Test endpoint to verify auth routes are working
+app.get('/test/auth', (req, res) => {
+  res.json({ 
+    message: 'Auth routes are working',
+    endpoints: [
+      'POST /api/auth/login',
+      'POST /api/auth/register', 
+      'GET /api/auth/me',
+      'POST /api/auth/refresh'
+    ],
+    timestamp: new Date().toISOString()
+  })
 })
 
 app.use('/api/auth', authRoutes)
