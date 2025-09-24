@@ -6,7 +6,6 @@ import morgan from 'morgan'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 
-import authRoutes from './routes/auth.js'
 import appointmentRoutes from './routes/appointments.js'
 import feedbackRoutes from './routes/feedback.js'
 import aiRoutes from './routes/ai.js'
@@ -45,7 +44,6 @@ app.use(morgan('dev'))
 
 app.get('/', (req, res) => res.json({ status: 'ok', service: 'HopeLine API' }))
 
-app.use('/api/auth', authRoutes)
 app.use('/api/appointments', appointmentRoutes)
 app.use('/api/feedback', feedbackRoutes)
 app.use('/api/ai', aiRoutes)
