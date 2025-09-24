@@ -11,6 +11,8 @@ router.post('/login', async (req, res) => {
   try {
     const { email, password } = req.body
 
+    console.log('Login attempt:', { email, passwordLength: password?.length })
+
     if (!email || !password) {
       return res.status(400).json({ message: 'Email and password are required' })
     }
@@ -20,12 +22,16 @@ router.post('/login', async (req, res) => {
       $or: [{ email }, { username: email }]
     })
 
+    console.log('User found:', user ? { id: user._id, email: user.email, username: user.username } : 'No user found')
+
     if (!user) {
       return res.status(401).json({ message: 'Invalid credentials' })
     }
 
     // Check password
     const isValidPassword = await user.comparePassword(password)
+    console.log('Password valid:', isValidPassword)
+    
     if (!isValidPassword) {
       return res.status(401).json({ message: 'Invalid credentials' })
     }

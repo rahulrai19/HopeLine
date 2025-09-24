@@ -62,6 +62,50 @@ app.use(morgan('dev'))
 
 app.get('/', (req, res) => res.json({ status: 'ok', service: 'HopeLine API' }))
 
+// Debug endpoint to check database connection and users
+app.get('/debug/users', async (req, res) => {
+  try {
+    const User = (await import('./models/User.js')).default
+    const users = await User.find({}).select('-password')
+    res.json({ 
+      message: 'Database connected successfully',
+      userCount: users.length,
+      users: users.map(u => ({ id: u._id, name: u.name, email: u.email, username: u.username, role: u.role }))
+    })
+  } catch (error) {
+    res.status(500).json({ message: 'Database error', error: error.message })
+  }
+})
+
+// Debug endpoint to seed database with demo users
+app.post('/debug/seed', async (req, res) => {
+  try {
+    const User = (await import('./models/User.js')).default
+    
+    // Demo users with the exact credentials from your frontend
+    const demoUsers = [
+      { name: 'Student Demo', email: 'student@university.edu', username: 'student_demo', password: 'admin123', role: 'student' },
+      { name: 'Admin User', email: 'admin@university.edu', username: 'admin', password: 'admin123', role: 'admin' },
+      { name: 'John Doe', email: 'john@university.edu', username: 'john_doe', password: 'password123', role: 'student' },
+      { name: 'Jane Smith', email: 'jane@university.edu', username: 'jane_smith', password: 'password123', role: 'student' }
+    ]
+    
+    // Clear existing users
+    await User.deleteMany({})
+    
+    // Create demo users
+    const users = await User.insertMany(demoUsers)
+    
+    res.json({ 
+      message: 'Database seeded successfully',
+      userCount: users.length,
+      users: users.map(u => ({ id: u._id, name: u.name, email: u.email, username: u.username, role: u.role }))
+    })
+  } catch (error) {
+    res.status(500).json({ message: 'Seeding error', error: error.message })
+  }
+})
+
 app.use('/api/auth', authRoutes)
 app.use('/api/appointments', appointmentRoutes)
 app.use('/api/feedback', feedbackRoutes)
