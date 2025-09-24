@@ -6,6 +6,7 @@ import morgan from 'morgan'
 import dotenv from 'dotenv'
 import mongoose from 'mongoose'
 
+import authRoutes from './routes/auth.js'
 import appointmentRoutes from './routes/appointments.js'
 import feedbackRoutes from './routes/feedback.js'
 import aiRoutes from './routes/ai.js'
@@ -26,17 +27,34 @@ const allowedOrigins = [
   // Add your specific frontend Vercel URL
   'https://hope-line.vercel.app',
   // Add your frontend Vercel URL here
-  process.env.FRONTEND_URL,
-  // Allow any Vercel app domain (for flexibility)
-  /^https:\/\/.*\.vercel\.app$/
-]
+  process.env.FRONTEND_URL
+].filter(Boolean) // Remove undefined values
 
-app.use(cors({
-  origin: allowedOrigins,
+// CORS function to handle origin checking
+const corsOptions = {
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true)
+    
+    // Check if origin is in allowed list
+    if (allowedOrigins.includes(origin)) {
+      return callback(null, true)
+    }
+    
+    // Check if origin matches Vercel pattern
+    if (/^https:\/\/.*\.vercel\.app$/.test(origin)) {
+      return callback(null, true)
+    }
+    
+    callback(new Error('Not allowed by CORS'))
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}))
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200 // Some legacy browsers choke on 204
+}
+
+app.use(cors(corsOptions))
 
 app.use(helmet())
 app.use(express.json())
@@ -44,6 +62,7 @@ app.use(morgan('dev'))
 
 app.get('/', (req, res) => res.json({ status: 'ok', service: 'HopeLine API' }))
 
+app.use('/api/auth', authRoutes)
 app.use('/api/appointments', appointmentRoutes)
 app.use('/api/feedback', feedbackRoutes)
 app.use('/api/ai', aiRoutes)
