@@ -48,7 +48,10 @@ export function AppLayout() {
         <nav className="nav container">
           <div className={styles.left}>
             <button className={styles.burger} aria-label="Menu" onClick={()=>setOpen(v=>!v)}>☰</button>
-            <Link to="/" className="brand">HopeLine</Link>
+            <Link to="/" className={styles.brandLogo}>
+              <img src="/logo.png" alt="HopeLine Logo" className={styles.logoImage} />
+              <span className={styles.brandText}>HopeLine</span>
+            </Link>
           </div>
           <div className={`${styles.links} ${open? styles.open:''}`} onClick={()=>setOpen(false)}>
             <NavLink to="/student">Student</NavLink>
