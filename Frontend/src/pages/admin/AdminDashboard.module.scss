@@ -1,6 +1,6 @@
 .dashboardContainer {
   min-height: 100vh;
-  background: radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 70%);
+  background: var(--bg);
   padding: 24px;
 }
 
@@ -17,11 +17,11 @@
 
 // Header
 .header {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: 12px;
   padding: 20px 24px;
-  backdrop-filter: blur(10px);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
 }
 
 .headerContent {
@@ -44,7 +44,7 @@
   .logoIcon {
     width: 32px;
     height: 32px;
-    background: linear-gradient(135deg, #66b2b2, #4a9d9d);
+    background: linear-gradient(135deg, var(--primary), var(--accent));
     border-radius: 8px;
     display: flex;
     align-items: center;
@@ -55,7 +55,7 @@
   span {
     font-size: 20px;
     font-weight: 700;
-    color: #ffffff;
+    color: var(--text);
   }
 }
 
@@ -69,7 +69,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  color: #66b2b2;
+  color: var(--primary);
   font-size: 14px;
   font-weight: 500;
 }
@@ -77,7 +77,7 @@
 .statusDot {
   width: 8px;
   height: 8px;
-  background: #66b2b2;
+  background: var(--success, #38a169);
   border-radius: 50%;
   animation: pulse 2s infinite;
 }
@@ -92,7 +92,7 @@
   background: rgba(239, 68, 68, 0.1);
   border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 8px;
-  color: #ef4444;
+  color: var(--danger, #ef4444);
   font-size: 14px;
   font-weight: 500;
   cursor: pointer;
@@ -112,25 +112,29 @@
 }
 
 .statCard {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 20px;
   display: flex;
   align-items: center;
   gap: 16px;
-  backdrop-filter: blur(10px);
   transition: all 0.3s ease;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   
   &:hover {
-    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--primary);
     transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.08);
   }
 }
 
 .statIcon {
   font-size: 24px;
   flex-shrink: 0;
+  background: var(--button-bg);
+  padding: 12px;
+  border-radius: 12px;
 }
 
 .statContent {
@@ -140,15 +144,16 @@
 .statValue {
   font-size: 24px;
   font-weight: 700;
-  color: #66b2b2;
+  color: var(--text);
   margin-bottom: 4px;
 }
 
 .statLabel {
-  font-size: 14px;
-  color: #cccccc;
+  font-size: 13px;
+  color: var(--muted);
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 0.5px;
+  font-weight: 600;
 }
 
 // Content Grid
@@ -172,35 +177,11 @@
 
 // Cards
 .card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 16px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
   padding: 24px;
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-  position: relative;
-  overflow: hidden;
-  
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: linear-gradient(90deg, #66b2b2, #4a3a6a);
-    transform: scaleX(0);
-    transition: transform 0.3s ease;
-  }
-  
-  &:hover {
-    background: rgba(255, 255, 255, 0.08);
-    transform: translateY(-2px);
-    
-    &::before {
-      transform: scaleX(1);
-    }
-  }
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
 }
 
 .cardHeader {
@@ -208,22 +189,26 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
   
   h3 {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 600;
-    color: #ffffff;
+    color: var(--text);
     margin: 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
   }
 }
 
 .cardIcon {
-  font-size: 20px;
+  font-size: 18px;
   opacity: 0.7;
 }
 
 .cardContent {
-  color: #e0e0e0;
+  color: var(--text);
 }
 
 // Activity List
@@ -238,12 +223,12 @@
   align-items: center;
   gap: 12px;
   padding: 12px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--panel-2);
   border-radius: 8px;
   transition: background 0.2s ease;
   
   &:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--button-bg);
   }
 }
 
@@ -258,13 +243,14 @@
 
 .activityTitle {
   font-size: 14px;
-  color: #ffffff;
+  color: var(--text);
   margin-bottom: 2px;
+  font-weight: 500;
 }
 
 .activityTime {
   font-size: 12px;
-  color: #999;
+  color: var(--muted);
 }
 
 // Action List
@@ -279,19 +265,19 @@
   align-items: center;
   gap: 12px;
   padding: 12px 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
   border-radius: 8px;
-  color: #e0e0e0;
+  color: var(--text);
   font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
   text-align: left;
   
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    border-color: rgba(102, 178, 178, 0.3);
-    transform: translateX(4px);
+    background: var(--button-bg);
+    border-color: var(--primary);
   }
 }
 
@@ -311,8 +297,8 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 12px 0;
+  border-bottom: 1px solid var(--border);
   
   &:last-child {
     border-bottom: none;
@@ -321,13 +307,14 @@
 
 .statusLabel {
   font-size: 14px;
-  color: #cccccc;
+  color: var(--text-secondary);
+  font-weight: 500;
 }
 
 .statusValue {
   font-size: 14px;
-  color: #66b2b2;
-  font-weight: 500;
+  color: var(--success, #38a169);
+  font-weight: 600;
 }
 
 // Responsive Design

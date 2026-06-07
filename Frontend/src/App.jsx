@@ -33,7 +33,7 @@ export default function App() {
         <Route path="signup" element={<Signup />} />
         
         <Route element={<AppLayout />}> 
-          <Route path="student/dashboard" element={<StudentDashboard />} />
+          <Route path="student/dashboard" element={<Navigate to="/" replace />} />
           <Route path="student/assessment" element={<RequireStudent><Assessment /></RequireStudent>} />
           <Route path="student/crisis" element={<CrisisAlert />} />
           <Route path="student/support" element={<ChooseSupport />} />

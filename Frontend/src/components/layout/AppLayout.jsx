@@ -4,43 +4,27 @@ import styles from './AppLayout.module.scss'
 import { useAuth } from '../../context/AuthContext.jsx'
 import { MoodIndicator } from '../mood/MoodIndicator.jsx'
 import { NavbarChat } from '../chatbot/NavbarChat.jsx'
+import { ProfileDropdown } from './ProfileDropdown.jsx'
 
 export function AppLayout() {
-  const { adminLoggedIn } = useAuth()
+  const { adminLoggedIn, user } = useAuth()
   const [open, setOpen] = useState(false)
-  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'system')
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light')
   const navigate = useNavigate()
   function goAdmin(){ navigate(adminLoggedIn ? '/admin/dashboard' : '/login?role=admin') }
 
-  // Determine effective theme when using system preference
-  function getSystemTheme(){
-    if (typeof window === 'undefined') return 'light'
-    return window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
-  }
-
   useEffect(() => {
     const root = document.documentElement
-    const apply = (mode) => {
-      const effective = mode === 'system' ? getSystemTheme() : mode
-      if (effective === 'dark') root.setAttribute('data-theme', 'dark')
-      else root.removeAttribute('data-theme')
-    }
-
-    apply(theme)
+    if (theme === 'dark') root.setAttribute('data-theme', 'dark')
+    else root.removeAttribute('data-theme')
     localStorage.setItem('theme', theme)
-
-    // Listen to OS changes when in system mode
-    const mql = window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null
-    const handler = () => { if (theme === 'system') apply('system') }
-    if (mql) mql.addEventListener ? mql.addEventListener('change', handler) : mql.addListener(handler)
-    return () => { if (mql) mql.removeEventListener ? mql.removeEventListener('change', handler) : mql.removeListener(handler) }
   }, [theme])
 
   function toggleTheme(){
-    setTheme(t => t === 'light' ? 'dark' : t === 'dark' ? 'system' : 'light')
+    setTheme(t => t === 'light' ? 'dark' : 'light')
   }
-  const effectiveTheme = theme === 'system' ? (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme
-  const themeIcon = theme === 'system' ? '🖥️' : effectiveTheme === 'dark' ? '🌙' : '☀️'
+  
+  const themeIcon = theme === 'dark' ? '🌙' : '☀️'
   const themeTitle = `Theme: ${theme} (click to switch)`
   return (
     <div className={styles.shell}>
@@ -60,11 +44,15 @@ export function AppLayout() {
           </div>
           <div className={styles.status}>
             <MoodIndicator compact={true} />
-            <button className="btn ghost" onClick={toggleTheme} aria-label="Toggle theme" title={themeTitle}>
+            <button className={styles.iconBtn} onClick={toggleTheme} aria-label="Toggle theme" title={themeTitle}>
               <span style={{fontSize:'18px', lineHeight:1}}>{themeIcon}</span>
             </button>
             <NavbarChat />
-            <button className="btn primary" onClick={goAdmin}>{adminLoggedIn? 'Admin Panel' : 'Login'}</button>
+            {user ? (
+              <ProfileDropdown />
+            ) : (
+              <button className="btn primary" onClick={goAdmin}>{adminLoggedIn ? 'Admin Panel' : 'Login'}</button>
+            )}
           </div>
         </nav>
       </header>

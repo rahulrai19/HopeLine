@@ -80,7 +80,7 @@ export function NavbarChat() {
 
   return (
     <div style={{ position:'relative' }}>
-      <button className="btn ghost" onClick={()=>setOpen(true)} aria-label="Open chat">💬</button>
+      <button style={{ width: 42, height: 42, borderRadius: '50%', padding: 0, display: 'flex', alignItems: 'center', justifyContent: 'center', border: '1px solid var(--border)', background: 'var(--panel)', cursor: 'pointer' }} onClick={()=>setOpen(true)} aria-label="Open chat">💬</button>
       {open && (
         <div style={{ position:'fixed', inset:0, zIndex:1000 }}>
           <div onClick={()=>setOpen(false)} style={{ position:'absolute', inset:0, background:'rgba(0,0,0,0.5)' }} />

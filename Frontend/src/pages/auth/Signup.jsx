@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { AuthAPI } from '../../services/api'
-import './Signup.module.scss'
+import styles from './Auth.module.scss'
 
 export default function Signup() {
   const { signup } = useAuth()
@@ -39,7 +39,7 @@ export default function Signup() {
             username: { checking: false, available: null } 
           }))
         }
-      }, 500) // Debounce for 500ms
+      }, 500)
 
       return () => clearTimeout(timeoutId)
     } else {
@@ -83,8 +83,6 @@ export default function Signup() {
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
-    
-    // Clear specific error when user starts typing
     if (errors[name]) {
       setErrors(prev => ({ ...prev, [name]: '' }))
     }
@@ -92,39 +90,15 @@ export default function Signup() {
 
   const validateForm = () => {
     const newErrors = {}
-
-    // Name validation
-    if (!formData.name.trim()) {
-      newErrors.name = 'Full name is required'
-    }
-
-    // Email validation
-    if (!formData.email.trim()) {
-      newErrors.email = 'Email is required'
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
-      newErrors.email = 'Please enter a valid email address'
-    }
-
-    // Username validation
-    if (!formData.username.trim()) {
-      newErrors.username = 'Username is required'
-    } else if (formData.username.length < 3) {
-      newErrors.username = 'Username must be at least 3 characters long'
-    }
-
-    // Password validation
-    if (!formData.password) {
-      newErrors.password = 'Password is required'
-    } else if (formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters long'
-    }
-
-    // Confirm password validation
-    if (!formData.confirmPassword) {
-      newErrors.confirmPassword = 'Please confirm your password'
-    } else if (formData.password !== formData.confirmPassword) {
-      newErrors.confirmPassword = 'Passwords do not match'
-    }
+    if (!formData.name.trim()) newErrors.name = 'Full name is required'
+    if (!formData.email.trim()) newErrors.email = 'Email is required'
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = 'Please enter a valid email address'
+    if (!formData.username.trim()) newErrors.username = 'Username is required'
+    else if (formData.username.length < 3) newErrors.username = 'Username must be at least 3 characters long'
+    if (!formData.password) newErrors.password = 'Password is required'
+    else if (formData.password.length < 6) newErrors.password = 'Password must be at least 6 characters long'
+    if (!formData.confirmPassword) newErrors.confirmPassword = 'Please confirm your password'
+    else if (formData.password !== formData.confirmPassword) newErrors.confirmPassword = 'Passwords do not match'
 
     setErrors(newErrors)
     return Object.keys(newErrors).length === 0
@@ -132,17 +106,11 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
-    
-    if (!validateForm()) {
-      return
-    }
-
-    // Check if username and email are available
+    if (!validateForm()) return
     if (validation.username.available === false) {
       setErrors(prev => ({ ...prev, username: 'Username is already taken' }))
       return
     }
-
     if (validation.email.available === false) {
       setErrors(prev => ({ ...prev, email: 'Email is already registered' }))
       return
@@ -152,14 +120,9 @@ export default function Signup() {
     setErrors({})
 
     try {
-      const result = await signup(formData)
-      console.log('Signup successful:', result)
-      // User is automatically logged in after successful signup
-      // Redirect to student dashboard
+      await signup(formData)
       navigate('/student/dashboard')
     } catch (error) {
-      console.error('Signup error:', error)
-      
       try {
         const errorData = JSON.parse(error.message)
         setErrors({ general: errorData.message })
@@ -172,25 +135,25 @@ export default function Signup() {
   }
 
   return (
-    <div className="signup-container">
-      <div className="signup-card">
-        <div className="signup-header">
-          <div className="logo-section">
-            <div className="logo-icon">💚</div>
-            <div className="logo-text">HopeLine</div>
-          </div>
-          <h1>Create Student Account</h1>
-          <p>Join HopeLine to access mental health support and resources</p>
+    <div className={styles.authContainer}>
+      <div className={styles.authCard}>
+        <div className={styles.authHeader}>
+          <Link to="/" style={{ textDecoration: 'none' }}>
+            <div className={styles.logoSection}>
+              <img src="/logo.png" alt="HopeLine Logo" className={styles.logoImage} />
+              <div className={styles.logoText}>HopeLine</div>
+            </div>
+          </Link>
+          <h1>Create Account</h1>
+          <p>Join HopeLine for mental health support</p>
         </div>
 
-        <form onSubmit={handleSubmit} className="signup-form">
+        <form onSubmit={handleSubmit}>
           {errors.general && (
-            <div className="error-message general-error">
-              {errors.general}
-            </div>
+            <div className={styles.generalError}>{errors.general}</div>
           )}
 
-          <div className="form-group">
+          <div className={styles.formGroup}>
             <label htmlFor="name">Full Name *</label>
             <input
               type="text"
@@ -198,54 +161,54 @@ export default function Signup() {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className={errors.name ? 'error' : ''}
+              className={errors.name ? styles.error : ''}
               placeholder="Enter your full name"
               required
             />
-            {errors.name && <span className="error-text">{errors.name}</span>}
+            {errors.name && <span className={styles.errorText}>{errors.name}</span>}
           </div>
 
-          <div className="form-group">
+          <div className={styles.formGroup}>
             <label htmlFor="email">Email Address *</label>
-            <div className="input-with-validation">
+            <div className={styles.inputWithValidation}>
               <input
                 type="email"
                 id="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`${errors.email ? 'error' : ''} ${validation.email.available === true ? 'success' : ''}`}
+                className={`${errors.email ? styles.error : ''} ${validation.email.available === true ? styles.success : ''}`}
                 placeholder="Enter your email address"
                 required
               />
-              {validation.email.checking && <span className="checking">Checking...</span>}
-              {validation.email.available === true && <span className="success-icon">✓</span>}
-              {validation.email.available === false && <span className="error-icon">✗</span>}
+              {validation.email.checking && <span className={`${styles.validationIcon} ${styles.checking}`}>...</span>}
+              {validation.email.available === true && <span className={`${styles.validationIcon} ${styles.successIcon}`}>✓</span>}
+              {validation.email.available === false && <span className={`${styles.validationIcon} ${styles.errorIcon}`}>✗</span>}
             </div>
-            {errors.email && <span className="error-text">{errors.email}</span>}
+            {errors.email && <span className={styles.errorText}>{errors.email}</span>}
           </div>
 
-          <div className="form-group">
+          <div className={styles.formGroup}>
             <label htmlFor="username">Username *</label>
-            <div className="input-with-validation">
+            <div className={styles.inputWithValidation}>
               <input
                 type="text"
                 id="username"
                 name="username"
                 value={formData.username}
                 onChange={handleChange}
-                className={`${errors.username ? 'error' : ''} ${validation.username.available === true ? 'success' : ''}`}
+                className={`${errors.username ? styles.error : ''} ${validation.username.available === true ? styles.success : ''}`}
                 placeholder="Choose a username"
                 required
               />
-              {validation.username.checking && <span className="checking">Checking...</span>}
-              {validation.username.available === true && <span className="success-icon">✓</span>}
-              {validation.username.available === false && <span className="error-icon">✗</span>}
+              {validation.username.checking && <span className={`${styles.validationIcon} ${styles.checking}`}>...</span>}
+              {validation.username.available === true && <span className={`${styles.validationIcon} ${styles.successIcon}`}>✓</span>}
+              {validation.username.available === false && <span className={`${styles.validationIcon} ${styles.errorIcon}`}>✗</span>}
             </div>
-            {errors.username && <span className="error-text">{errors.username}</span>}
+            {errors.username && <span className={styles.errorText}>{errors.username}</span>}
           </div>
 
-          <div className="form-group">
+          <div className={styles.formGroup}>
             <label htmlFor="password">Password *</label>
             <input
               type="password"
@@ -253,14 +216,14 @@ export default function Signup() {
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className={errors.password ? 'error' : ''}
+              className={errors.password ? styles.error : ''}
               placeholder="Create a password (min 6 characters)"
               required
             />
-            {errors.password && <span className="error-text">{errors.password}</span>}
+            {errors.password && <span className={styles.errorText}>{errors.password}</span>}
           </div>
 
-          <div className="form-group">
+          <div className={styles.formGroup}>
             <label htmlFor="confirmPassword">Confirm Password *</label>
             <input
               type="password"
@@ -268,26 +231,26 @@ export default function Signup() {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className={errors.confirmPassword ? 'error' : ''}
+              className={errors.confirmPassword ? styles.error : ''}
               placeholder="Confirm your password"
               required
             />
-            {errors.confirmPassword && <span className="error-text">{errors.confirmPassword}</span>}
+            {errors.confirmPassword && <span className={styles.errorText}>{errors.confirmPassword}</span>}
           </div>
 
           <button 
             type="submit" 
-            className="signup-button"
+            className={styles.submitBtn}
             disabled={isLoading || validation.username.checking || validation.email.checking}
           >
             {isLoading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
 
-        <div className="signup-footer">
+        <div className={styles.authFooter}>
           <p>
             Already have an account? 
-            <a href="/login" className="login-link"> Sign in here</a>
+            <Link to="/login" className={styles.switchLink}>Sign in here</Link>
           </p>
         </div>
       </div>

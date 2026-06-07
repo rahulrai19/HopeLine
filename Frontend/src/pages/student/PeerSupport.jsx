@@ -11,7 +11,7 @@ export function PeerSupport() {
   return (
     <div className="card">
       <h2>Peer Support</h2>
-      <div style={{height:300, overflow:'auto', padding:12, background:'#0d1730', borderRadius:10, border:'1px solid rgba(255,255,255,0.08)'}}>
+      <div style={{height:300, overflow:'auto', padding:12, background:'var(--panel)', borderRadius:10, border:'1px solid var(--border)'}}>
         {messages.map(m=> (
           <div key={m.id} style={{marginBottom:8}}>
             <strong>{m.from}:</strong> {m.text}

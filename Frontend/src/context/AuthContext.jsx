@@ -42,8 +42,16 @@ export function AuthProvider({ children }) {
   const loginAdmin   = () => { setAdminLoggedIn(true); localStorage.setItem('role','admin') }
   const logoutAdmin  = () => { setAdminLoggedIn(false); localStorage.removeItem('token'); localStorage.removeItem('role'); setUser(null) }
 
+  const logout = () => {
+    setStudentLoggedIn(false)
+    setAdminLoggedIn(false)
+    setUser(null)
+    localStorage.removeItem('token')
+    localStorage.removeItem('role')
+  }
+
   return (
-    <AuthContext.Provider value={{ user, studentLoggedIn, adminLoggedIn, loginStudent, logoutStudent, loginAdmin, logoutAdmin, login, signup }}>
+    <AuthContext.Provider value={{ user, studentLoggedIn, adminLoggedIn, loginStudent, logoutStudent, loginAdmin, logoutAdmin, login, signup, logout }}>
       {children}
     </AuthContext.Provider>
   )

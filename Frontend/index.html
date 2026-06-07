@@ -3,15 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HopeLine - Digital Mental Health</title>
-    <link rel="icon" href="/vite.svg" />
+    <title>HopeLine</title>
+    <link rel="icon" href="/logo.png" />
     <script>
       (function(){
         try {
-          var saved = localStorage.getItem('theme') || 'system';
-          var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
-          var effective = saved === 'system' ? (prefersDark ? 'dark' : 'light') : saved;
-          if (effective === 'dark') document.documentElement.setAttribute('data-theme','dark');
+          var saved = localStorage.getItem('theme') || 'light';
+          if (saved === 'dark') document.documentElement.setAttribute('data-theme','dark');
         } catch (e) {}
       })();
     </script>

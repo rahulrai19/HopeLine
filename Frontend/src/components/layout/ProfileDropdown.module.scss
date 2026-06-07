@@ -1,0 +1,131 @@
+.dropdownContainer {
+  position: relative;
+  display: inline-block;
+}
+
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: var(--button-bg);
+  border: 1px solid var(--border);
+  padding: 6px 16px 6px 6px;
+  border-radius: 30px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: var(--panel-2);
+    border-color: var(--primary);
+  }
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary), var(--accent));
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.userInfo {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  
+  .userName {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+  }
+
+  .userRole {
+    font-size: 11px;
+    color: var(--muted);
+    text-transform: capitalize;
+  }
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 240px;
+  background: var(--panel);
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  z-index: 100;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menuHeader {
+  padding: 16px;
+  border-bottom: 1px solid var(--border);
+  background: var(--card-bg);
+
+  .fullName {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+
+  .email {
+    font-size: 13px;
+    color: var(--muted);
+    word-break: break-all;
+  }
+}
+
+.menuBody {
+  padding: 8px;
+}
+
+.menuItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  color: var(--text);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: all 0.2s;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+  font-size: 14px;
+  font-weight: 500;
+
+  &:hover {
+    background: var(--button-bg);
+    color: var(--primary);
+  }
+
+  &.logoutItem {
+    color: var(--danger, #ef4444);
+    
+    &:hover {
+      background: rgba(239, 68, 68, 0.1);
+    }
+  }
+}

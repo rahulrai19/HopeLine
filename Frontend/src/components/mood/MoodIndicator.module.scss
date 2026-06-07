@@ -1,13 +1,15 @@
 .moodIndicator {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  padding: 16px;
-  backdrop-filter: blur(10px);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 24px;
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow);
   transition: all 0.3s ease;
   
   &:hover {
-    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
   }
 }
 
@@ -65,46 +67,46 @@
 .moodLabel {
   font-size: 16px;
   font-weight: 600;
-  color: white;
+  color: var(--text);
 }
 
 .moodTime {
   font-size: 12px;
-  color: #ccc;
+  color: var(--muted);
 }
 
 .toggleBtn {
   background: none;
   border: none;
-  color: #ccc;
+  color: var(--muted);
   cursor: pointer;
   font-size: 12px;
   padding: 4px;
   transition: color 0.2s;
   
   &:hover {
-    color: white;
+    color: var(--text);
   }
 }
 
 .moodHistory {
   margin-top: 16px;
   padding-top: 16px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--border);
   
   h4, h5 {
-    color: white;
+    color: var(--text);
     margin-bottom: 8px;
     font-size: 14px;
   }
   
   p {
-    color: #ccc;
+    color: var(--muted);
     font-size: 12px;
     margin-bottom: 4px;
     
     strong {
-      color: white;
+      color: var(--text);
     }
   }
 }
@@ -121,7 +123,7 @@
   align-items: center;
   gap: 8px;
   padding: 8px;
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--panel-2);
   border-radius: 8px;
 }
 
@@ -141,17 +143,17 @@
 
 .historyLabel {
   font-size: 12px;
-  color: white;
+  color: var(--text);
   font-weight: 500;
 }
 
 .historyTime {
   font-size: 10px;
-  color: #999;
+  color: var(--muted);
 }
 
 .insights {
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--panel-2);
   padding: 12px;
   border-radius: 8px;
   margin-top: 8px;
@@ -163,17 +165,17 @@
   gap: 8px;
   margin-top: 12px;
   padding-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--border);
   
   span {
     font-size: 12px;
-    color: #ccc;
+    color: var(--muted);
   }
 }
 
 .quickMoodBtn {
   background: transparent;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid var(--border);
   border-radius: 6px;
   width: 28px;
   height: 28px;
@@ -185,7 +187,7 @@
   font-size: 14px;
   
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--button-bg);
     transform: scale(1.1);
   }
   

@@ -4,25 +4,13 @@
   margin: 0 auto;
 }
 
-.hero {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
-  padding: 40px;
-  margin-bottom: 32px;
-  backdrop-filter: blur(10px);
-  position: relative;
-  overflow: hidden;
+.heroCard {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   
   &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
     background: radial-gradient(ellipse at center, rgba(102, 178, 178, 0.1) 0%, transparent 70%);
-    pointer-events: none;
   }
 }
 
@@ -32,19 +20,15 @@
 }
 
 .welcome {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--primary-600);
   margin-bottom: 8px;
-  background: linear-gradient(135deg, #66b2b2, #4a3a6a);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 .subtitle {
   font-size: 18px;
-  color: #cccccc;
+  color: var(--muted);
   margin-bottom: 24px;
 }
 
@@ -62,7 +46,7 @@
 
 .statusLabel {
   font-size: 14px;
-  color: #999;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -70,7 +54,7 @@
 .statusValue {
   font-size: 20px;
   font-weight: 600;
-  color: #66b2b2;
+  color: var(--primary);
 }
 
 .grid {
@@ -80,8 +64,8 @@
 }
 
 .card {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 24px;
   backdrop-filter: blur(10px);
@@ -103,8 +87,8 @@
   
   &:hover {
     transform: translateY(-4px);
-    background: rgba(255, 255, 255, 0.08);
-    border-color: rgba(102, 178, 178, 0.3);
+    background: var(--panel);
+    border-color: var(--primary);
     
     &::before {
       transform: scaleX(1);
@@ -121,7 +105,7 @@
   h3 {
     font-size: 20px;
     font-weight: 600;
-    color: #ffffff;
+    color: var(--text);
     margin: 0;
   }
 }
@@ -142,17 +126,17 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
   border-radius: 12px;
   text-decoration: none;
   color: inherit;
   transition: all 0.2s ease;
   
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--panel);
     transform: translateX(4px);
-    border-color: rgba(102, 178, 178, 0.3);
+    border-color: var(--primary);
   }
 }
 
@@ -161,7 +145,7 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: rgba(239, 68, 68, 0.1);
+  background: var(--panel-2);
   border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 12px;
   text-decoration: none;
@@ -169,7 +153,7 @@
   transition: all 0.2s ease;
   
   &:hover {
-    background: rgba(239, 68, 68, 0.2);
+    background: rgba(239, 68, 68, 0.1);
     transform: translateX(4px);
     border-color: rgba(239, 68, 68, 0.5);
   }
@@ -183,13 +167,13 @@
 .actionTitle {
   font-size: 16px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text);
   margin-bottom: 2px;
 }
 
 .actionDesc {
   font-size: 14px;
-  color: #cccccc;
+  color: var(--muted);
 }
 
 .resourceList {
@@ -203,13 +187,13 @@
   align-items: center;
   gap: 16px;
   padding: 16px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--panel-2);
+  border: 1px solid var(--border);
   border-radius: 12px;
   transition: all 0.2s ease;
   
   &:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--panel);
     transform: translateX(4px);
   }
 }
@@ -226,13 +210,13 @@
 .resourceTitle {
   font-size: 16px;
   font-weight: 600;
-  color: #ffffff;
+  color: var(--text);
   margin-bottom: 2px;
 }
 
 .resourceDesc {
   font-size: 14px;
-  color: #cccccc;
+  color: var(--muted);
 }
 
 .resourceLink {
@@ -267,13 +251,13 @@
 .progressNumber {
   font-size: 28px;
   font-weight: 700;
-  color: #66b2b2;
+  color: var(--primary);
   margin-bottom: 4px;
 }
 
 .progressLabel {
   font-size: 12px;
-  color: #999;
+  color: var(--muted);
   text-transform: uppercase;
   letter-spacing: 1px;
 }
@@ -283,7 +267,7 @@
     padding: 16px;
   }
   
-  .hero {
+  .heroCard {
     padding: 24px;
   }
   
@@ -310,7 +294,7 @@
 }
 
 @media (max-width: 480px) {
-  .hero {
+  .heroCard {
     padding: 20px;
   }
   

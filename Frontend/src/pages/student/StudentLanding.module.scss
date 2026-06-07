@@ -1,7 +1,6 @@
-// Main hero container
 .hero {
   min-height: 100vh;
-  background: radial-gradient(ellipse at center, #1a1a1a 0%, #0a0a0a 70%);
+  background: radial-gradient(ellipse at center, var(--bg-grad-1) 0%, var(--bg-grad-2) 70%);
   position: relative;
   overflow-x: hidden;
   scroll-behavior: smooth;
@@ -14,7 +13,7 @@
     transform: translateX(-50%);
     width: 800px;
     height: 400px;
-    background: radial-gradient(ellipse, rgba(74, 58, 106, 0.3) 0%, transparent 70%);
+    background: radial-gradient(ellipse, rgba(102, 178, 178, 0.15) 0%, transparent 70%);
     pointer-events: none;
   }
 }
@@ -35,41 +34,22 @@
   gap: 12px;
 }
 
-.logoIcon {
-  width: 40px;
-  height: 40px;
-  background: linear-gradient(135deg, #66b2b2, #4a9d9d);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  font-weight: bold;
-  color: white;
-  position: relative;
-  overflow: hidden;
-}
-
-.logoHeart {
-  font-size: 24px;
-  animation: heartbeat 2s ease-in-out infinite;
-}
-
-@keyframes heartbeat {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.1); }
+.logoImage {
+  height: 36px;
+  width: auto;
+  object-fit: contain;
 }
 
 .brand {
   font-size: 24px;
   font-weight: 700;
-  color: white;
+  color: var(--text);
   line-height: 1;
 }
 
 .tagline {
   font-size: 14px;
-  color: #e0e0e0;
+  color: var(--muted);
   margin-top: 2px;
 }
 
@@ -80,7 +60,7 @@
 }
 
 .navLink {
-  color: #e0e0e0;
+  color: var(--text-secondary);
   text-decoration: none;
   font-size: 16px;
   transition: all 0.2s;
@@ -88,8 +68,8 @@
   border-radius: 6px;
   
   &:hover {
-    color: white;
-    background: rgba(255, 255, 255, 0.1);
+    color: var(--text);
+    background: var(--button-bg);
   }
 }
 
@@ -97,6 +77,10 @@
   font-size: 20px;
   cursor: pointer;
   transition: transform 0.2s;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  color: var(--text);
   
   &:hover {
     transform: scale(1.1);
@@ -130,33 +114,45 @@
 
 // Hero section
 .heroSection {
-  display: flex;
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
   align-items: center;
+  gap: 60px;
   min-height: 70vh;
   padding: 40px 0;
 }
 
-.heroContent {
+.heroLeft {
   display: flex;
   flex-direction: column;
+  align-items: flex-start;
+  max-width: 650px;
+}
+
+.heroRight {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  text-align: center;
-  width: 100%;
-  max-width: 800px;
-  margin: 0 auto;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  padding: 40px;
+  backdrop-filter: blur(16px);
+  box-shadow: var(--shadow);
 }
 
 .badge {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  background: rgba(102, 178, 178, 0.1);
-  border: 1px solid #66b2b2;
+  background: var(--button-bg);
+  border: 1px solid var(--primary);
   border-radius: 24px;
   padding: 8px 16px;
   margin-bottom: 24px;
   font-size: 14px;
-  color: white;
+  color: var(--text);
 }
 
 .waveIcon {
@@ -172,12 +168,12 @@
 }
 
 .highlight {
-  color: #66b2b2;
+  color: var(--primary);
 }
 
 .description {
   font-size: 18px;
-  color: #cccccc;
+  color: var(--muted);
   max-width: 600px;
   line-height: 1.6;
   margin-bottom: 32px;
@@ -186,15 +182,14 @@
 .personalizedContent {
   display: flex;
   gap: 16px;
-  margin-bottom: 24px;
+  margin-bottom: 32px;
   flex-wrap: wrap;
-  justify-content: center;
 }
 
 .activityCard,
 .quoteCard {
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: 12px;
   padding: 16px;
   display: flex;
@@ -204,7 +199,7 @@
   transition: all 0.3s ease;
   
   &:hover {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--button-bg);
     transform: translateY(-2px);
   }
 }
@@ -222,7 +217,7 @@
 
 .emotionPrompt {
   font-size: 16px;
-  color: #e0e0e0;
+  color: var(--text-secondary);
   margin-bottom: 20px;
 }
 
@@ -261,7 +256,7 @@
     }
     
     .emotionLabel {
-      color: white;
+      color: var(--text);
       font-weight: 600;
     }
     
@@ -291,7 +286,7 @@
 
 .emotionLabel {
   font-size: 12px;
-  color: #e0e0e0;
+  color: var(--text-secondary);
   transition: all 0.2s;
 }
 
@@ -342,7 +337,6 @@
   display: flex;
   gap: 16px;
   flex-wrap: wrap;
-  justify-content: center;
 }
 
 .primaryBtn {
@@ -364,9 +358,9 @@
 
 .secondaryBtn {
   background: transparent;
-  color: #e0e0e0;
+  color: var(--text);
   padding: 16px 32px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid var(--border-strong);
   border-radius: 12px;
   text-decoration: none;
   font-weight: 600;
@@ -374,9 +368,9 @@
   transition: all 0.2s;
   
   &:hover {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border-color: white;
+    background: var(--button-bg);
+    color: var(--primary);
+    border-color: var(--primary);
   }
 }
 
@@ -385,7 +379,6 @@
   gap: 16px;
   align-items: center;
   flex-wrap: wrap;
-  justify-content: center;
 }
 
 .signupBtn {
@@ -409,11 +402,11 @@
 
 // Info section (Features & About combined)
 .infoSection {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--panel-2);
   border-radius: 20px;
   padding: 40px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
 }
 
 .infoGrid {
@@ -424,16 +417,16 @@
 
 .featuresCard,
 .aboutCard {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   border-radius: 16px;
   padding: 32px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
 }
 
 .cardTitle {
   font-size: 24px;
   font-weight: 700;
-  color: white;
+  color: var(--text);
   margin-bottom: 24px;
   text-align: center;
 }
@@ -465,20 +458,20 @@
 .featureItem h4 {
   font-size: 16px;
   font-weight: 600;
-  color: white;
+  color: var(--text);
   margin-bottom: 4px;
 }
 
 .featureItem p {
   font-size: 14px;
-  color: #cccccc;
+  color: var(--muted);
   margin: 0;
 }
 
 .aboutText {
   font-size: 16px;
   line-height: 1.6;
-  color: #cccccc;
+  color: var(--text-secondary);
   margin-bottom: 24px;
 }
 
@@ -508,11 +501,11 @@
 
 // Support section
 .supportSection {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--panel-2);
   border-radius: 20px;
   padding: 40px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
 }
 
 .sectionTitle {
@@ -520,7 +513,7 @@
   font-weight: 700;
   text-align: center;
   margin-bottom: 32px;
-  color: white;
+  color: var(--text);
   position: relative;
   
   &::after {
@@ -543,8 +536,8 @@
 }
 
 .supportCard {
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: var(--card-bg);
+  border: 1px solid var(--border);
   border-radius: 16px;
   padding: 24px;
   text-align: center;
@@ -585,12 +578,12 @@
 .supportCard h3 {
   font-size: 18px;
   font-weight: 600;
-  color: white;
+  color: var(--text);
   margin-bottom: 8px;
 }
 
 .supportCard p {
-  color: #cccccc;
+  color: var(--muted);
   line-height: 1.5;
   font-size: 14px;
   margin-bottom: 16px;
@@ -616,18 +609,18 @@
 
 // Insights section
 .insightsSection {
-  background: rgba(255, 255, 255, 0.02);
+  background: var(--panel-2);
   border-radius: 20px;
   padding: 40px;
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
 }
 
 .insightsCard {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--card-bg);
   border-radius: 16px;
   padding: 24px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
 }
 
 .insightsContent {
@@ -689,9 +682,9 @@
 
 // Footer
 .footer {
-  background: rgba(0, 0, 0, 0.3);
+  background: var(--panel-2);
   padding: 32px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--border);
   margin-top: 40px;
 }
 
@@ -719,12 +712,12 @@
     span {
       font-size: 20px;
       font-weight: 700;
-      color: white;
+      color: var(--text);
     }
   }
   
   p {
-    color: #cccccc;
+    color: var(--muted);
     font-size: 14px;
     line-height: 1.6;
   }
@@ -738,7 +731,7 @@
 
 .footerColumn {
   h4 {
-    color: white;
+    color: var(--text);
     font-size: 14px;
     font-weight: 600;
     margin-bottom: 12px;
@@ -746,14 +739,14 @@
   
   a {
     display: block;
-    color: #cccccc;
+    color: var(--muted);
     text-decoration: none;
     font-size: 12px;
     margin-bottom: 6px;
     transition: color 0.2s;
     
     &:hover {
-      color: #66b2b2;
+      color: var(--primary);
     }
   }
 }
@@ -761,10 +754,10 @@
 .footerBottom {
   text-align: center;
   padding-top: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid var(--border);
   
   p {
-    color: #999;
+    color: var(--text-secondary);
     font-size: 12px;
   }
 }
@@ -781,6 +774,25 @@
   
   .supportGrid {
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  }
+}
+
+@media (max-width: 992px) {
+  .heroSection {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 40px;
+  }
+  
+  .heroLeft {
+    align-items: center;
+    margin: 0 auto;
+  }
+  
+  .personalizedContent,
+  .ctaButtons,
+  .authButtons {
+    justify-content: center;
   }
 }
 

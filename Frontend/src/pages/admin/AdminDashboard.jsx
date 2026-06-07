@@ -6,6 +6,7 @@ import { OfflineCounselorSupport } from './OfflineCounselorSupport.jsx'
 import { UpdatesNotification } from './UpdatesNotification.jsx'
 import { AdminCharts } from './AdminCharts.jsx'
 import { Sidebar } from './Sidebar.jsx'
+import { ProfileDropdown } from '../../components/layout/ProfileDropdown.jsx'
 import styles from './AdminDashboard.module.scss'
 import { useNavigate } from 'react-router-dom'
 
@@ -27,13 +28,7 @@ export function AdminDashboard() {
                 </div>
               </div>
               <div className={styles.headerRight}>
-                <div className={styles.adminStatus}>
-                  <span className={styles.statusDot}></span>
-                  <span>Admin Online</span>
-                </div>
-                <button className={styles.logoutBtn} onClick={logoutAdmin}>
-                  Logout
-                </button>
+                <ProfileDropdown />
               </div>
             </div>
           </div>

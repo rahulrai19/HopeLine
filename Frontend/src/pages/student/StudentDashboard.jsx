@@ -1,27 +1,31 @@
 import { Link } from 'react-router-dom'
+import { useAuth } from '../../context/AuthContext.jsx'
 import styles from './StudentDashboard.module.scss'
 
 export function StudentDashboard() {
+  const { user } = useAuth()
+  const name = user?.fullName || user?.name || 'Student'
+
   return (
     <div className={styles.wrap}>
-      <div className={styles.hero}>
-        <div className={styles.heroContent}>
-          <h1 className={styles.welcome}>Welcome back, Student! 👋</h1>
-          <p className={styles.subtitle}>Here's your mental health overview</p>
-          <div className={styles.statusCard}>
-            <div className={styles.statusItem}>
-              <span className={styles.statusLabel}>Current Status</span>
-              <span className={styles.statusValue}>Low Risk</span>
-            </div>
-            <div className={styles.statusItem}>
-              <span className={styles.statusLabel}>Last Assessment</span>
-              <span className={styles.statusValue}>2 days ago</span>
+      <div className={styles.grid}>
+        {/* Welcome Card */}
+        <div className={`${styles.card} ${styles.heroCard}`}>
+          <div className={styles.heroContent}>
+            <h1 className={styles.welcome}>Welcome back, {name}! 👋</h1>
+            <p className={styles.subtitle}>Here's your mental health overview</p>
+            <div className={styles.statusCard}>
+              <div className={styles.statusItem}>
+                <span className={styles.statusLabel}>Current Status</span>
+                <span className={styles.statusValue}>Low Risk</span>
+              </div>
+              <div className={styles.statusItem}>
+                <span className={styles.statusLabel}>Last Assessment</span>
+                <span className={styles.statusValue}>2 days ago</span>
+              </div>
             </div>
           </div>
         </div>
-      </div>
-
-      <div className={styles.grid}>
         <section className={styles.card}>
           <div className={styles.cardHeader}>
             <h3>Quick Actions</h3>
