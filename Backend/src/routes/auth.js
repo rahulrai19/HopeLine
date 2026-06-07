@@ -168,4 +168,48 @@ router.post('/refresh', async (req, res) => {
   }
 })
 
+// GET /api/auth/check-username/:username
+router.get('/check-username/:username', async (req, res) => {
+  try {
+    const { username } = req.params
+    
+    if (!username || username.length < 3) {
+      return res.json({ available: false, message: 'Username must be at least 3 characters' })
+    }
+    
+    const existingUser = await User.findOne({ username })
+    
+    res.json({ 
+      available: !existingUser,
+      message: existingUser ? 'Username is already taken' : 'Username is available'
+    })
+    
+  } catch (error) {
+    console.error('Check username error:', error)
+    res.status(500).json({ message: 'Internal server error' })
+  }
+})
+
+// GET /api/auth/check-email/:email
+router.get('/check-email/:email', async (req, res) => {
+  try {
+    const { email } = req.params
+    
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      return res.json({ available: false, message: 'Please enter a valid email' })
+    }
+    
+    const existingUser = await User.findOne({ email })
+    
+    res.json({ 
+      available: !existingUser,
+      message: existingUser ? 'Email is already registered' : 'Email is available'
+    })
+    
+  } catch (error) {
+    console.error('Check email error:', error)
+    res.status(500).json({ message: 'Internal server error' })
+  }
+})
+
 export default router
