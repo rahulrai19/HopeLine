@@ -1,22 +1,20 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { useMood } from '../../context/MoodContext.jsx'
 import { useAuth } from '../../context/AuthContext.jsx'
-import styles from './StudentLanding.module.scss'
-import dashboardStyles from './StudentDashboard.module.scss'
-import { ProfileDropdown } from '../../components/layout/ProfileDropdown.jsx'
 import { NavbarChat } from '../../components/chatbot/NavbarChat.jsx'
+import { ProfileDropdown } from '../../components/layout/ProfileDropdown.jsx'
+import styles from './StudentLanding.module.scss'
 
 export function StudentLanding() {
-  const { currentMood, emotions, updateMood, personalizedContent, isLoading, getMoodInsights } = useMood()
+  const { currentMood, emotions, updateMood, personalizedContent, isLoading, getMoodInsights, moodHistory } = useMood()
   const { user, studentLoggedIn, adminLoggedIn } = useAuth()
-  const [showInsights, setShowInsights] = useState(false)
-  const [animationKey, setAnimationKey] = useState(0)
+  const navigate = useNavigate()
   const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'light')
-
+  const [animKey, setAnimKey] = useState(0)
   const insights = getMoodInsights()
+  const activeMood = emotions.find(e => e.id === currentMood)
 
-  // Theme logic
   useEffect(() => {
     const root = document.documentElement
     if (theme === 'dark') root.setAttribute('data-theme', 'dark')
@@ -24,430 +22,336 @@ export function StudentLanding() {
     localStorage.setItem('theme', theme)
   }, [theme])
 
-  function toggleTheme() {
-    setTheme(t => t === 'light' ? 'dark' : 'light')
+  useEffect(() => { setAnimKey(k => k + 1) }, [currentMood])
+
+  const greeting = () => {
+    const name = user?.name || user?.fullName || 'Student'
+    if (studentLoggedIn) return `Welcome back, ${name} 👋`
+    return 'Find Peace of Mind'
   }
 
-  const themeIcon = theme === 'dark' ? '🌙' : '☀️'
-
-  // Update animation when mood changes
-  useEffect(() => {
-    setAnimationKey(prev => prev + 1)
-  }, [currentMood])
-
-  const handleEmotionSelect = async (emotionId) => {
-    await updateMood(emotionId, 'User selected emotion on landing page')
-  }
-
-  const getDynamicGreeting = () => {
-    const name = user?.fullName || user?.name || 'Student'
-    if (studentLoggedIn) return `Welcome back, ${name}! How are you feeling today?`
-    if (adminLoggedIn) return `Admin Dashboard - System Overview`
-    return "Find Peace of Mind"
-  }
-
-  const getDynamicDescription = () => {
-    if (personalizedContent) {
-      return personalizedContent.message
-    }
-    if (studentLoggedIn) {
-      return "Continue your mental health journey with personalized support and resources."
-    }
-    return "Experience a new way of emotional support. Our AI companion is here to listen, understand, and guide you through life's journey."
+  const description = () => {
+    if (personalizedContent) return personalizedContent.message
+    if (studentLoggedIn) return 'Continue your mental health journey with personalized AI support and resources.'
+    return 'A comprehensive digital mental health platform built for university students. AI-powered, private and available 24/7.'
   }
 
   return (
-    <div className={styles.hero}>
-      {/* Header */}
+    <div className={styles.page}>
+      {/* ─── Header ─────────────────────────────────── */}
       <header className={styles.header}>
-        <div className={styles.logo}>
-          <img src="/logo.png" alt="HopeLine Logo" className={styles.logoImage} />
-          <div>
-            <div className={styles.brand}>HopeLine</div>
-            <div className={styles.tagline}>Your mental health Companion</div>
-          </div>
-        </div>
-        <nav className={styles.nav}>
-          {!studentLoggedIn && (
-            <>
-              <a href="#features" className={styles.navLink}>Features</a>
-              <a href="#about" className={styles.navLink}>About HopeLine</a>
-            </>
-          )}
-          <a href={studentLoggedIn ? "/student/support" : "#support"} className={styles.navLink}>Student Support</a>
-          <button className={styles.moonIcon} onClick={toggleTheme} aria-label="Toggle theme" title={`Theme: ${theme}`}>
-            {themeIcon}
-          </button>
-          {studentLoggedIn ? (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-              <NavbarChat />
-              <ProfileDropdown />
+        <div className={styles.headerInner}>
+          <Link to="/" className={styles.brand}>
+            <img src="/logo.png" alt="HopeLine" className={styles.logo} />
+            <div>
+              <div className={styles.brandName}>HopeLine</div>
+              <div className={styles.brandTagline}>Your mental health companion</div>
             </div>
-          ) : (
-            <Link to="/login?role=admin" className={styles.signInBtn}>Sign In</Link>
-          )}
-        </nav>
+          </Link>
+
+          <nav className={styles.nav}>
+            {!studentLoggedIn && (
+              <>
+                <a href="#features" className={styles.navLink}>Features</a>
+                <a href="#support" className={styles.navLink}>Support</a>
+                <a href="#about" className={styles.navLink}>About</a>
+              </>
+            )}
+            <button
+              className={styles.themeBtn}
+              onClick={() => setTheme(t => t === 'light' ? 'dark' : 'light')}
+            >
+              {theme === 'dark' ? '🌙' : '☀️'}
+            </button>
+
+            {studentLoggedIn ? (
+              <div className={styles.userActions}>
+                <NavbarChat />
+                <ProfileDropdown />
+              </div>
+            ) : (
+              <div className={styles.authBtns}>
+                <Link to="/login?role=student" className={styles.signInBtn}>Sign In</Link>
+                <Link to="/signup" className={styles.signUpBtn}>Get Started</Link>
+              </div>
+            )}
+          </nav>
+
+          {/* Mobile burger handled separately */}
+        </div>
       </header>
 
-      {/* Main Content */}
-      <main className={styles.mainContent}>
-        {/* Hero Section */}
-        <section className={styles.heroSection}>
+      {/* ─── Hero ───────────────────────────────────── */}
+      <section className={styles.hero}>
+        <div className={styles.heroContent}>
+          {/* Left */}
           <div className={styles.heroLeft}>
-            {/* Badge */}
-            <div className={styles.badge}>
-              <div className={styles.waveIcon}>🌊</div>
-              <span>Your AI Agent Mental Health Companion</span>
+            <div className={styles.heroBadge}>
+              <span>🌊</span> Your AI Mental Health Companion
             </div>
-
-            {/* Main Headline */}
-            <h1 className={styles.headline} key={animationKey}>
-              <span className={styles.highlight}>{getDynamicGreeting()}</span>
+            <h1 className={styles.heroHeadline} key={animKey}>
+              {greeting()}
             </h1>
+            <p className={styles.heroDesc}>{description()}</p>
 
-            {/* Description */}
-            <p className={styles.description}>
-              {getDynamicDescription()}
-            </p>
-
-            {/* Personalized Content */}
             {personalizedContent && (
-              <div className={styles.personalizedContent}>
-                <div className={styles.activityCard}>
-                  <div className={styles.activityIcon}>💡</div>
-                  <span>{personalizedContent.activity}</span>
+              <div className={styles.aiCards}>
+                <div className={styles.aiCard}>
+                  <span>💡</span> {personalizedContent.activity}
                 </div>
-                <div className={styles.quoteCard}>
-                  <div className={styles.quoteIcon}>💭</div>
-                  <span>"{personalizedContent.quote}"</span>
+                <div className={styles.aiCard}>
+                  <span>💭</span> "{personalizedContent.quote}"
                 </div>
               </div>
             )}
 
-            {/* CTA Buttons */}
-            <div className={styles.ctaButtons}>
+            <div className={styles.heroCtas}>
               {studentLoggedIn ? (
-                <Link to="/student/dashboard" className={styles.primaryBtn}>
-                  Continue Journey
-                </Link>
+                <>
+                  <Link to="/student/support" className="btn primary lg">Get Support Now</Link>
+                  <Link to="/student/assessment" className="btn ghost lg">Take Assessment</Link>
+                </>
+              ) : adminLoggedIn ? (
+                <Link to="/admin/dashboard" className="btn primary lg">Admin Dashboard</Link>
               ) : (
-                <div className={styles.authButtons}>
-                  <Link to="/login?role=student" className={styles.primaryBtn}>
-                    Sign In
-                  </Link>
-                  <Link to="/signup" className={styles.signupBtn}>
-                    Create Account
-                  </Link>
-                </div>
+                <>
+                  <Link to="/login?role=student" className="btn primary lg">Start Your Journey</Link>
+                  <Link to="/login?role=admin" className="btn ghost lg">Admin Access</Link>
+                </>
               )}
-              {adminLoggedIn ? (
-                <Link to="/admin/dashboard" className={styles.secondaryBtn}>
-                  Admin Dashboard
-                </Link>
-              ) : (
-                <Link to="/login?role=admin" className={styles.secondaryBtn}>
-                  Admin Access
-                </Link>
-              )}
+            </div>
+
+            {/* Trust badges */}
+            <div className={styles.trustRow}>
+              <span>🔒 Private & Secure</span>
+              <span>🤖 AI Powered</span>
+              <span>⚡ 24/7 Support</span>
             </div>
           </div>
 
+          {/* Right — Mood panel */}
           <div className={styles.heroRight}>
-            {/* Emotion Selector */}
-            <div className={styles.emotionSection}>
-              <p className={styles.emotionPrompt}>Whatever you're feeling, we're here to listen</p>
+            <div className={styles.moodCard}>
+              <div className={styles.moodOrb} style={{ '--mood-color': activeMood?.color }}>
+                <span className={styles.moodEmoji} key={animKey}>{activeMood?.emoji}</span>
+              </div>
+              <p className={styles.moodPrompt}>How are you feeling right now?</p>
               <div className={styles.emotionGrid}>
-                {emotions.map(emotion => (
+                {emotions.map(e => (
                   <button
-                    key={emotion.id}
-                    className={`${styles.emotionBtn} ${currentMood === emotion.id ? styles.active : ''}`}
-                    onClick={() => handleEmotionSelect(emotion.id)}
+                    key={e.id}
+                    className={`${styles.emotionBtn} ${currentMood === e.id ? styles.emotionActive : ''}`}
+                    onClick={() => updateMood(e.id, 'Selected on landing page')}
                     disabled={isLoading}
-                    style={{
-                      '--emotion-color': emotion.color,
-                      opacity: isLoading ? 0.7 : 1
-                    }}
+                    style={{ '--ec': e.color }}
                   >
-                    <div className={styles.emotionEmoji}>{emotion.emoji}</div>
-                    <div className={styles.emotionLabel}>{emotion.label}</div>
-                    {isLoading && currentMood === emotion.id && (
-                      <div className={styles.loadingSpinner}></div>
-                    )}
+                    <span className={styles.emotionEmoji}>{e.emoji}</span>
+                    <span className={styles.emotionLabel}>{e.label}</span>
+                    {isLoading && currentMood === e.id && <div className="spinner" style={{ width: 12, height: 12 }} />}
                   </button>
                 ))}
               </div>
-              
-              {/* Slider */}
-              <div className={styles.sliderContainer}>
-                <div className={styles.sliderTrack}>
-                  <div 
-                    className={styles.sliderThumb}
-                    style={{
-                      left: `${emotions.findIndex(e => e.id === currentMood) * 25}%`,
-                      backgroundColor: emotions.find(e => e.id === currentMood)?.color
-                    }}
-                  />
+
+              {insights && (
+                <div className={styles.insightPill}>
+                  Trend: <strong>{insights.trend.replace('_', ' ')}</strong> · Mood: <strong>{insights.dominantMood}</strong>
                 </div>
+              )}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ─── Dashboard (logged in) ───────────────────── */}
+      {studentLoggedIn && (
+        <section className={styles.dashSection}>
+          <div className={styles.dashGrid}>
+            {/* Quick Actions */}
+            <div className={styles.dashCard}>
+              <div className={styles.dashCardHeader}>
+                <h3>Quick Actions</h3>
+                <span>⚡</span>
+              </div>
+              <div className={styles.actionGrid}>
+                <Link to="/student/support" className={styles.actionTile} style={{ '--tc': '#0d9488' }}>
+                  <span className={styles.actionIcon}>🤝</span>
+                  <span className={styles.actionLabel}>Choose Support</span>
+                </Link>
+                <Link to="/student/assessment" className={styles.actionTile} style={{ '--tc': '#6d28d9' }}>
+                  <span className={styles.actionIcon}>📊</span>
+                  <span className={styles.actionLabel}>Assessment</span>
+                </Link>
+                <Link to="/student/peer" className={styles.actionTile} style={{ '--tc': '#0ea5e9' }}>
+                  <span className={styles.actionIcon}>💬</span>
+                  <span className={styles.actionLabel}>Community Chat</span>
+                </Link>
+                <Link to="/student/crisis" className={`${styles.actionTile} ${styles.crisisTile}`} style={{ '--tc': '#ef4444' }}>
+                  <span className={styles.actionIcon}>🚨</span>
+                  <span className={styles.actionLabel}>Crisis Alert</span>
+                </Link>
+              </div>
+            </div>
+
+            {/* Mood History */}
+            <div className={styles.dashCard}>
+              <div className={styles.dashCardHeader}>
+                <h3>Mood History</h3>
+                <span>📈</span>
+              </div>
+              {moodHistory.length === 0 ? (
+                <p style={{ color: 'var(--muted)', fontSize: 14 }}>No mood entries yet. Select an emotion above!</p>
+              ) : (
+                <div className={styles.moodHistory}>
+                  {moodHistory.slice(-7).reverse().map((entry, i) => {
+                    const em = emotions.find(e => e.id === entry.mood)
+                    return (
+                      <div key={entry.id || i} className={styles.moodHistoryItem}>
+                        <span>{em?.emoji}</span>
+                        <span style={{ color: 'var(--text-secondary)', fontSize: 13 }}>{em?.label}</span>
+                        <span style={{ color: 'var(--muted)', fontSize: 12, marginLeft: 'auto' }}>
+                          {new Date(entry.timestamp).toLocaleDateString()}
+                        </span>
+                      </div>
+                    )
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Resources */}
+            <div className={styles.dashCard}>
+              <div className={styles.dashCardHeader}>
+                <h3>Recent Resources</h3>
+                <span>📚</span>
+              </div>
+              <div className={styles.resourceList}>
+                {[
+                  { icon: '🧘', title: 'Mindful Breathing', desc: '5-min guided session', to: '/student/self-help' },
+                  { icon: '🎵', title: 'Calming Sounds', desc: 'Stress relief playlist', to: '/student/self-help' },
+                  { icon: '📖', title: 'Sleep Tips', desc: 'Sleep hygiene guide', to: '/student/self-help' },
+                ].map((r, i) => (
+                  <Link key={i} to={r.to} className={styles.resourceItem}>
+                    <span className={styles.resourceIcon}>{r.icon}</span>
+                    <div className={styles.resourceText}>
+                      <div className={styles.resourceTitle}>{r.title}</div>
+                      <div className={styles.resourceDesc}>{r.desc}</div>
+                    </div>
+                    <span className={styles.resourceArrow}>→</span>
+                  </Link>
+                ))}
               </div>
             </div>
           </div>
         </section>
+      )}
 
-        {studentLoggedIn ? (
-          <div className={dashboardStyles.grid} style={{ marginTop: '20px' }}>
-            <section className={dashboardStyles.card}>
-              <div className={dashboardStyles.cardHeader}>
-                <h3>Quick Actions</h3>
-                <div className={dashboardStyles.cardIcon}>⚡</div>
-              </div>
-              <div className={dashboardStyles.actionGrid}>
-                <Link to="/student/support" className={dashboardStyles.actionBtn}>
-                  <div className={dashboardStyles.actionIcon}>🤝</div>
-                  <div>
-                    <div className={dashboardStyles.actionTitle}>Choose Support</div>
-                    <div className={dashboardStyles.actionDesc}>Get help now</div>
-                  </div>
-                </Link>
-                <Link to="/student/assessment" className={dashboardStyles.actionBtn}>
-                  <div className={dashboardStyles.actionIcon}>📊</div>
-                  <div>
-                    <div className={dashboardStyles.actionTitle}>Take Assessment</div>
-                    <div className={dashboardStyles.actionDesc}>Check your mood</div>
-                  </div>
-                </Link>
-                <Link to="/student/crisis" className={dashboardStyles.crisisBtn}>
-                  <div className={dashboardStyles.actionIcon}>🚨</div>
-                  <div>
-                    <div className={dashboardStyles.actionTitle}>Crisis Alert</div>
-                    <div className={dashboardStyles.actionDesc}>Emergency support</div>
-                  </div>
-                </Link>
-              </div>
-            </section>
+      {/* ─── Features (logged out) ───────────────────── */}
+      {!studentLoggedIn && !adminLoggedIn && (
+        <>
+          <section id="features" className={styles.featuresSection}>
+            <div className={styles.sectionHeader}>
+              <h2>Why Choose HopeLine?</h2>
+              <p>Everything you need for your mental wellness journey</p>
+            </div>
+            <div className={styles.featuresGrid}>
+              {[
+                { icon: '🤖', title: 'AI Companion', desc: '24/7 intelligent support powered by advanced LLMs. Always here to listen, understand, and guide you.', color: '#0d9488' },
+                { icon: '👥', title: 'Peer Community', desc: 'Connect anonymously with fellow students who truly understand what you\'re going through.', color: '#6d28d9' },
+                { icon: '👨‍⚕️', title: 'Professional Counseling', desc: 'Book sessions with licensed mental health professionals at your convenience.', color: '#0ea5e9' },
+                { icon: '📊', title: 'Smart Assessments', desc: 'PHQ-9 and GAD-7 validated tools to track your mental health with instant insights.', color: '#f59e0b' },
+                { icon: '📚', title: 'Self-Help Library', desc: 'Videos, breathing exercises, calming sounds, and journaling prompts at your fingertips.', color: '#10b981' },
+                { icon: '🔒', title: 'Privacy First', desc: 'Your data is encrypted and confidential. We never share your personal information.', color: '#ef4444' },
+              ].map((f, i) => (
+                <div key={i} className={styles.featureCard} style={{ '--fc': f.color }}>
+                  <div className={styles.featureIconBox}>{f.icon}</div>
+                  <h4>{f.title}</h4>
+                  <p>{f.desc}</p>
+                </div>
+              ))}
+            </div>
+          </section>
 
-            <section className={dashboardStyles.card}>
-              <div className={dashboardStyles.cardHeader}>
-                <h3>Recent Resources</h3>
-                <div className={dashboardStyles.cardIcon}>📚</div>
-              </div>
-              <div className={dashboardStyles.resourceList}>
-                <div className={dashboardStyles.resourceItem}>
-                  <div className={dashboardStyles.resourceIcon}>🧘</div>
-                  <div className={dashboardStyles.resourceContent}>
-                    <div className={dashboardStyles.resourceTitle}>Mindful Breathing</div>
-                    <div className={dashboardStyles.resourceDesc}>5-minute guided session</div>
-                  </div>
-                  <Link to="/student/self-help" className={dashboardStyles.resourceLink}>Start</Link>
+          <section id="support" className={styles.supportSection}>
+            <div className={styles.sectionHeader}>
+              <h2>Student Support Options</h2>
+              <p>Choose the type of support that works best for you</p>
+            </div>
+            <div className={styles.supportGrid}>
+              {[
+                { icon: '🤖', title: 'AI Companion', desc: 'Instant, private chat with our mental health AI', btn: 'Start Chat', to: '/student/peer', grad: 'var(--grad-primary)' },
+                { icon: '👥', title: 'Peer Support', desc: 'Anonymous community with fellow students', btn: 'Join Community', to: '/student/peer', grad: 'var(--grad-accent)' },
+                { icon: '👨‍⚕️', title: 'Professional Counselor', desc: 'Licensed professionals, flexible scheduling', btn: 'Book Session', to: '/student/counselor', grad: 'linear-gradient(135deg,#0ea5e9,#0284c7)' },
+                { icon: '📚', title: 'Self-Help Resources', desc: 'Videos, exercises, meditation guides', btn: 'Explore', to: '/student/self-help', grad: 'linear-gradient(135deg,#10b981,#059669)' },
+              ].map((s, i) => (
+                <div key={i} className={styles.supportCard}>
+                  <div className={styles.supportIconWrap} style={{ background: s.grad }}>{s.icon}</div>
+                  <h4>{s.title}</h4>
+                  <p>{s.desc}</p>
+                  <Link to={s.to} className="btn primary" style={{ marginTop: 'auto' }}>{s.btn}</Link>
                 </div>
-                <div className={dashboardStyles.resourceItem}>
-                  <div className={dashboardStyles.resourceIcon}>🎵</div>
-                  <div className={dashboardStyles.resourceContent}>
-                    <div className={dashboardStyles.resourceTitle}>De-stress Playlist</div>
-                    <div className={dashboardStyles.resourceDesc}>Calming music collection</div>
-                  </div>
-                  <Link to="/student/self-help" className={dashboardStyles.resourceLink}>Listen</Link>
-                </div>
-                <div className={dashboardStyles.resourceItem}>
-                  <div className={dashboardStyles.resourceIcon}>📖</div>
-                  <div className={dashboardStyles.resourceContent}>
-                    <div className={dashboardStyles.resourceTitle}>Daily Journal</div>
-                    <div className={dashboardStyles.resourceDesc}>Reflect on your day</div>
-                  </div>
-                  <Link to="/student/self-help" className={dashboardStyles.resourceLink}>Write</Link>
-                </div>
-              </div>
-            </section>
+              ))}
+            </div>
+          </section>
 
-            <section className={dashboardStyles.card}>
-              <div className={dashboardStyles.cardHeader}>
-                <h3>Your Progress</h3>
-                <div className={dashboardStyles.cardIcon}>📈</div>
+          <section id="about" className={styles.aboutSection}>
+            <div className={styles.aboutInner}>
+              <div className={styles.aboutLeft}>
+                <h2>About HopeLine</h2>
+                <p>A comprehensive digital mental health platform designed specifically for university students. We understand the unique pressures of academic life — from exam stress to social challenges — and provide accessible, effective, and private support every step of the way.</p>
+                <p>Built by Team Verbose(0) for Smart India Hackathon, HopeLine integrates cutting-edge AI with human-centered design to make mental health support genuinely accessible.</p>
+                <Link to="/signup" className="btn primary lg">Join HopeLine Today</Link>
               </div>
-              <div className={dashboardStyles.progressStats}>
-                <div className={dashboardStyles.progressItem}>
-                  <div className={dashboardStyles.progressNumber}>7</div>
-                  <div className={dashboardStyles.progressLabel}>Days Active</div>
-                </div>
-                <div className={dashboardStyles.progressItem}>
-                  <div className={dashboardStyles.progressNumber}>3</div>
-                  <div className={dashboardStyles.progressLabel}>Sessions Completed</div>
-                </div>
-                <div className={dashboardStyles.progressItem}>
-                  <div className={dashboardStyles.progressNumber}>85%</div>
-                  <div className={dashboardStyles.progressLabel}>Wellness Score</div>
-                </div>
-              </div>
-            </section>
-          </div>
-        ) : (
-          <>
-            {/* Features & About Combined Section */}
-            <section id="features" className={styles.infoSection}>
-              <div className={styles.infoGrid}>
-                {/* Features */}
-                <div className={styles.featuresCard}>
-                  <h2 className={styles.cardTitle}>Why Choose HopeLine?</h2>
-                  <div className={styles.featuresList}>
-                    <div className={styles.featureItem}>
-                      <div className={styles.featureIcon}>🤖</div>
-                      <div>
-                        <h4>AI-Powered Support</h4>
-                        <p>24/7 intelligent companion</p>
-                      </div>
-                    </div>
-                    <div className={styles.featureItem}>
-                      <div className={styles.featureIcon}>👥</div>
-                      <div>
-                        <h4>Peer Support</h4>
-                        <p>Connect with fellow students</p>
-                      </div>
-                    </div>
-                    <div className={styles.featureItem}>
-                      <div className={styles.featureIcon}>👨‍⚕️</div>
-                      <div>
-                        <h4>Professional Counselors</h4>
-                        <p>Licensed mental health professionals</p>
-                      </div>
-                    </div>
-                    <div className={styles.featureItem}>
-                      <div className={styles.featureIcon}>📊</div>
-                      <div>
-                        <h4>Mood Tracking</h4>
-                        <p>Monitor your emotional patterns</p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* About */}
-                <div id="about" className={styles.aboutCard}>
-                  <h2 className={styles.cardTitle}>About HopeLine</h2>
-                  <p className={styles.aboutText}>
-                    A comprehensive digital mental health platform designed specifically for university students. 
-                    We understand the unique challenges you face and provide accessible, effective support.
-                  </p>
-                  <div className={styles.stats}>
-                    <div className={styles.stat}>
-                      <div className={styles.statNumber}>10K+</div>
-                      <div className={styles.statLabel}>Students Helped</div>
-                    </div>
-                    <div className={styles.stat}>
-                      <div className={styles.statNumber}>24/7</div>
-                      <div className={styles.statLabel}>Support Available</div>
-                    </div>
-                    <div className={styles.stat}>
-                      <div className={styles.statNumber}>95%</div>
-                      <div className={styles.statLabel}>Satisfaction Rate</div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </section>
-
-            {/* Support Options */}
-            <section id="support" className={styles.supportSection}>
-              <h2 className={styles.sectionTitle}>Student Support Options</h2>
-              <div className={styles.supportGrid}>
-                <div className={styles.supportCard}>
-                  <div className={styles.supportIcon}>🤖</div>
-                  <h3>AI Companion</h3>
-                  <p>Chat with our intelligent AI for 24/7 support</p>
-                  <Link to="/student/peer" className={styles.supportBtn}>Start Chatting</Link>
-                </div>
-
-                <div className={styles.supportCard}>
-                  <div className={styles.supportIcon}>👥</div>
-                  <h3>Peer Support</h3>
-                  <p>Connect with fellow students who understand</p>
-                  <Link to="/student/peer" className={styles.supportBtn}>Join Community</Link>
-                </div>
-
-                <div className={styles.supportCard}>
-                  <div className={styles.supportIcon}>👨‍⚕️</div>
-                  <h3>Professional Counseling</h3>
-                  <p>Book sessions with licensed professionals</p>
-                  <Link to="/student/counselor" className={styles.supportBtn}>Book Session</Link>
-                </div>
-
-                <div className={styles.supportCard}>
-                  <div className={styles.supportIcon}>📚</div>
-                  <h3>Self-Help Resources</h3>
-                  <p>Access mental health resources and exercises</p>
-                  <Link to="/student/self-help" className={styles.supportBtn}>Explore Resources</Link>
-                </div>
-              </div>
-            </section>
-          </>
-        )}
-
-        {/* Mood Insights - Only for logged in students */}
-        {insights && studentLoggedIn && (
-          <section className={styles.insightsSection}>
-            <h2 className={styles.sectionTitle}>Your Mood Insights</h2>
-            <div className={styles.insightsCard}>
-              <div className={styles.insightsContent}>
-                <div className={styles.insightItem}>
-                  <span className={styles.insightLabel}>Recent Trend:</span>
-                  <span className={styles.insightValue}>{insights.trend.replace('_', ' ')}</span>
-                </div>
-                <div className={styles.insightItem}>
-                  <span className={styles.insightLabel}>Most Common:</span>
-                  <span className={styles.insightValue}>{insights.dominantMood}</span>
-                </div>
-              </div>
-              <div className={styles.moodChart}>
-                {Object.entries(insights.moodCounts).map(([mood, count]) => (
-                  <div key={mood} className={styles.moodBar}>
-                    <span>{emotions.find(e => e.id === mood)?.emoji}</span>
-                    <div 
-                      className={styles.bar}
-                      style={{ 
-                        width: `${(count / Math.max(...Object.values(insights.moodCounts))) * 100}%`,
-                        backgroundColor: emotions.find(e => e.id === mood)?.color
-                      }}
-                    />
-                    <span>{count}</span>
+              <div className={styles.aboutStats}>
+                {[
+                  { num: '10K+', label: 'Students Helped' },
+                  { num: '24/7', label: 'Always Available' },
+                  { num: '95%', label: 'Satisfaction Rate' },
+                  { num: '3', label: 'Support Modes' },
+                ].map((s, i) => (
+                  <div key={i} className={styles.statCard}>
+                    <div className={styles.statNum}>{s.num}</div>
+                    <div className={styles.statLabel}>{s.label}</div>
                   </div>
                 ))}
               </div>
             </div>
           </section>
-        )}
-      </main>
+        </>
+      )}
 
-      {/* Footer */}
+      {/* ─── Footer ─────────────────────────────────── */}
       <footer className={styles.footer}>
-        <div className={styles.footerContent}>
+        <div className={styles.footerTop}>
           <div className={styles.footerBrand}>
             <div className={styles.footerLogo}>
-              <div className={styles.footerLogoIcon}>💚</div>
+              <img src="/logo.png" alt="HopeLine" style={{ height: 26 }} />
               <span>HopeLine</span>
             </div>
             <p>Your mental health companion for university life</p>
           </div>
           <div className={styles.footerLinks}>
-            <div className={styles.footerColumn}>
-              <h4>Support</h4>
+            <div className={styles.footerCol}>
+              <h5>Platform</h5>
               <a href="#features">Features</a>
+              <a href="#support">Support</a>
               <a href="#about">About</a>
-              <a href="#support">Student Support</a>
             </div>
-            <div className={styles.footerColumn}>
-              <h4>Resources</h4>
+            <div className={styles.footerCol}>
+              <h5>Help</h5>
               <a href="#">Privacy Policy</a>
               <a href="#">Terms of Service</a>
               <a href="#">Help Center</a>
             </div>
-            <div className={styles.footerColumn}>
-              <h4>Contact</h4>
+            <div className={styles.footerCol}>
+              <h5>Contact</h5>
               <a href="#">support@hopeline.edu</a>
               <a href="#">crisis@hopeline.edu</a>
-              <a href="#">+1 (800) 123-4567</a>
+              <a href="#">+91 1800-599-0019</a>
             </div>
           </div>
         </div>
         <div className={styles.footerBottom}>
-          <p>&copy; 2024 HopeLine. All rights reserved. Your mental health matters.</p>
+          <p>© 2024 HopeLine · All rights reserved · Your mental health matters</p>
         </div>
       </footer>
     </div>

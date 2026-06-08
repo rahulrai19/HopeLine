@@ -7,7 +7,7 @@ const router = Router()
 
 // POST /api/ai/chat
 router.post('/chat', async (req, res) => {
-  const { messages = [], lang = 'en', model = 'gemini-1.5-flash-8b', userId = 'anonymous' } = req.body || {}
+  const { messages = [], lang = 'en', model = 'gemini-1.5-flash', userId = 'anonymous' } = req.body || {}
 
   try {
     const context = aiPromptSystem.generateConversationContext(userId, messages)

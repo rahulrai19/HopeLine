@@ -12,6 +12,9 @@ import feedbackRoutes from './routes/feedback.js'
 import aiRoutes from './routes/ai.js'
 import analyticsRoutes from './routes/analytics.js'
 import { errorHandler } from './utils/errorHandler.js'
+import http from 'http'
+import { initializeSocket } from './socket.js'
+import { Message } from './models/Message.js'
 
 dotenv.config()
 
@@ -160,6 +163,16 @@ app.use('/api/feedback', feedbackRoutes)
 app.use('/api/ai', aiRoutes)
 app.use('/api/analytics', analyticsRoutes)
 
+// Chat history endpoint
+app.get('/api/chat/:roomId', async (req, res) => {
+  try {
+    const messages = await Message.find({ roomId: req.params.roomId }).sort({ createdAt: 1 });
+    res.json(messages);
+  } catch (error) {
+    res.status(500).json({ message: 'Error fetching messages', error: error.message });
+  }
+})
+
 app.use(errorHandler)
 
 const PORT = process.env.PORT || 4000
@@ -176,12 +189,16 @@ mongoose.connect(MONGO_URI).then(() => {
   }
 })
 
+// Create HTTP server and initialize Socket.IO
+const server = http.createServer(app)
+initializeSocket(server)
+
 // Start server only if not in Vercel environment
 if (!process.env.VERCEL) {
-  app.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`))
+  server.listen(PORT, () => console.log(`API running on http://localhost:${PORT}`))
 }
 
 // Export for Vercel
-export default app
+export default server
 
 

@@ -1,0 +1,217 @@
+.page {
+  max-width: 680px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Progress ─────────────────── */
+.progressWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.progressMeta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modeLabel {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--primary);
+  background: var(--primary-light);
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+.progressText { font-size: 13px; color: var(--muted); font-weight: 600; }
+
+.progressBar {
+  height: 8px;
+  background: var(--panel-2);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.progressFill {
+  height: 100%;
+  background: var(--grad-primary);
+  border-radius: var(--radius-full);
+  transition: width 0.4s var(--ease);
+}
+
+/* ── Question Card ────────────── */
+.questionCard {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: 36px;
+  box-shadow: var(--shadow-lg);
+  animation: fadeUp 0.3s var(--ease-out);
+}
+
+.questionType {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.questionText {
+  font-size: clamp(18px, 2.5vw, 22px);
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.4;
+  margin-bottom: 8px;
+}
+
+.questionHint {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 28px;
+}
+
+/* ── Choice Buttons ───────────── */
+.choiceGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.choiceBtn {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 16px 18px;
+  border-radius: var(--radius);
+  border: 1.5px solid var(--border);
+  background: var(--panel-2);
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  transition: all 0.2s var(--ease-spring);
+
+  &:hover {
+    border-color: var(--cc, var(--primary));
+    background: color-mix(in srgb, var(--cc, var(--primary)) 8%, transparent);
+    transform: translateX(4px);
+  }
+}
+
+.choiceSelected {
+  border-color: var(--cc, var(--primary)) !important;
+  background: color-mix(in srgb, var(--cc, var(--primary)) 12%, transparent) !important;
+  box-shadow: 0 4px 14px color-mix(in srgb, var(--cc, var(--primary)) 20%, transparent);
+
+  .choiceDot {
+    background: var(--cc, var(--primary));
+    border-color: var(--cc, var(--primary));
+    &::after {
+      content: '';
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: white;
+      display: block;
+    }
+  }
+}
+
+.choiceDot {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--border-strong);
+  flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s;
+}
+
+.choiceLabel {
+  flex: 1;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.choiceValue {
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+  background: var(--panel);
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+}
+
+/* ── Nav Buttons ──────────────── */
+.navBtns {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* ── Results ──────────────────── */
+.results {
+  max-width: 600px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  text-align: center;
+  animation: fadeUp 0.4s var(--ease-out);
+}
+
+.resultsIcon { font-size: 64px; }
+
+.resultsTitle {
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.resultsDesc {
+  font-size: 16px;
+  color: var(--text-secondary);
+  max-width: 440px;
+  line-height: 1.7;
+}
+
+.scoreGrid {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.scoreCard {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 24px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  box-shadow: var(--shadow);
+  min-width: 160px;
+}
+
+.scoreLabel { font-size: 13px; color: var(--muted); font-weight: 600; }
+.scoreNum { font-size: 48px; font-weight: 800; line-height: 1; }
+.scoreBadge {
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--radius-full);
+}
+
+.resultsActions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}

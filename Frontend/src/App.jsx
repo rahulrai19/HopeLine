@@ -1,7 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
-import { AppLayout } from './components/layout/AppLayout.jsx'
+import { AppShell } from './components/layout/AppShell.jsx'
 import { StudentLanding } from './pages/student/StudentLanding.jsx'
-import { StudentDashboard } from './pages/student/StudentDashboard.jsx'
 import { Assessment } from './pages/student/Assessment.jsx'
 import { CrisisAlert } from './pages/student/CrisisAlert.jsx'
 import { ChooseSupport } from './pages/student/ChooseSupport.jsx'
@@ -27,31 +26,36 @@ export default function App() {
     <AuthProvider>
       <MoodProvider>
         <Routes>
-        <Route index element={<StudentLanding />} />
-        <Route path="student" element={<StudentLanding />} />
-        <Route path="login" element={<Login />} />
-        <Route path="signup" element={<Signup />} />
-        
-        <Route element={<AppLayout />}> 
-          <Route path="student/dashboard" element={<Navigate to="/" replace />} />
-          <Route path="student/assessment" element={<RequireStudent><Assessment /></RequireStudent>} />
-          <Route path="student/crisis" element={<CrisisAlert />} />
-          <Route path="student/support" element={<ChooseSupport />} />
-          <Route path="student/self-help" element={<SelfHelp />} />
-          <Route path="student/peer" element={<PeerSupport />} />
-          <Route path="student/counselor" element={<Counselor />} />
-          <Route path="student/feedback" element={<Feedback />} />
+          {/* Public routes */}
+          <Route index element={<StudentLanding />} />
+          <Route path="student" element={<StudentLanding />} />
+          <Route path="login" element={<Login />} />
+          <Route path="signup" element={<Signup />} />
 
+          {/* Authenticated student routes — use AppShell with sidebar */}
+          <Route element={<RequireStudent><AppShell /></RequireStudent>}>
+            <Route path="student/dashboard" element={<Navigate to="/" replace />} />
+            <Route path="student/assessment" element={<Assessment />} />
+            <Route path="student/support" element={<ChooseSupport />} />
+            <Route path="student/self-help" element={<SelfHelp />} />
+            <Route path="student/peer" element={<PeerSupport />} />
+            <Route path="student/counselor" element={<Counselor />} />
+            <Route path="student/feedback" element={<Feedback />} />
+            <Route path="student/crisis" element={<CrisisAlert />} />
+          </Route>
+
+          {/* Admin routes — also use AppShell */}
           <Route path="admin">
             <Route index element={<AdminLogin />} />
-            <Route path="dashboard" element={<AdminDashboard />} />
-            <Route path="users" element={<UserManagement />} />
-            <Route path="cases" element={<CaseMonitoring />} />
-            <Route path="reports" element={<ReportsAnalytics />} />
-            <Route path="offline-support" element={<OfflineCounselorSupport />} />
-            <Route path="updates" element={<UpdatesNotification />} />
+            <Route element={<AppShell />}>
+              <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="users" element={<UserManagement />} />
+              <Route path="cases" element={<CaseMonitoring />} />
+              <Route path="reports" element={<ReportsAnalytics />} />
+              <Route path="offline-support" element={<OfflineCounselorSupport />} />
+              <Route path="updates" element={<UpdatesNotification />} />
+            </Route>
           </Route>
-        </Route>
         </Routes>
         <ChatbotWidget />
       </MoodProvider>
@@ -59,10 +63,8 @@ export default function App() {
   )
 }
 
-function RequireStudent({ children }){
+function RequireStudent({ children }) {
   const { studentLoggedIn } = useAuth()
   if (!studentLoggedIn) return <Navigate to="/login?role=student" replace />
   return children
 }
-
-

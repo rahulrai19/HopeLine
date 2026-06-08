@@ -8,13 +8,32 @@ export function AuthProvider({ children }) {
   const [adminLoggedIn, setAdminLoggedIn] = useState(false)
   const [user, setUser] = useState(null)
 
-  useEffect(()=>{
+  useEffect(() => {
     const token = localStorage.getItem('token')
     const role = localStorage.getItem('role')
+    
     if (token && role) {
-      setUser({ role })
-      setStudentLoggedIn(role==='student')
-      setAdminLoggedIn(role==='admin')
+      // Temporarily set logged in state so UI doesn't flicker
+      setStudentLoggedIn(role === 'student')
+      setAdminLoggedIn(role === 'admin')
+      
+      // Fetch full user profile
+      AuthAPI.getProfile().then(data => {
+        if (data && data.user) {
+          setUser(data.user)
+          localStorage.setItem('role', data.user.role)
+          setStudentLoggedIn(data.user.role === 'student')
+          setAdminLoggedIn(data.user.role === 'admin')
+        }
+      }).catch(err => {
+        console.error('Failed to restore session:', err)
+        // Only log out if it's a 401/auth error, otherwise keep the local session
+        if (err.message.includes('401')) {
+          logout()
+        } else {
+          setUser({ role }) // fallback to just role if network is down
+        }
+      })
     }
   }, [])
 

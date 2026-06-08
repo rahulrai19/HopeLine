@@ -5,7 +5,6 @@ function authHeaders(){ const t=getToken(); return t? { Authorization: `Bearer $
 
 export async function apiPost(path, body, opts={}){
   try {
-    console.log('API POST:', path, body)
     const res = await fetch(`${API_BASE}${path}`, {
       method: 'POST',
       headers: { 'Content-Type':'application/json', ...authHeaders(), ...(opts.headers||{}) },
@@ -28,7 +27,7 @@ export async function apiPost(path, body, opts={}){
 export const AuthAPI = {
   login: (payload) => apiPost('/api/auth/login', payload),
   register: (payload) => apiPost('/api/auth/register', payload),
-  signup: (payload) => apiPost('/api/auth/signup', payload),
+  signup: (payload) => apiPost('/api/auth/register', payload),
   checkUsername: (username) => apiGet(`/api/auth/check-username/${username}`),
   checkEmail: (email) => apiGet(`/api/auth/check-email/${email}`),
   getProfile: () => apiGet('/api/auth/profile'),
@@ -44,17 +43,6 @@ export const FeedbackAPI = {
 
 export const AIAPI = {
   chat: async (payload) => {
-    // In production (Vercel), prefer same-origin serverless function first
-    try {
-      const res = await fetch('/api/chat', {
-        method: 'POST',
-        headers: { 'Content-Type':'application/json' },
-        body: JSON.stringify(payload),
-      })
-      if (res.ok) return res.json()
-    } catch {}
-
-    // Fallback to configured backend API if available
     return apiPost('/api/ai/chat', payload)
   },
 }
